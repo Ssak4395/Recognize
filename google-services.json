@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "612637554422",
+    "project_id": "recognize-defe1",
+    "storage_bucket": "recognize-defe1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:612637554422:android:c8b0ce2f870b3541149ed7",
+        "android_client_info": {
+          "package_name": "com.example.recognize"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "612637554422-55o2ed5hr3c6b3i4vaa4o6t2fh3tlgd9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDahrftFPFYE9-CqigkDkqZ-fQ5By_XHnA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "612637554422-55o2ed5hr3c6b3i4vaa4o6t2fh3tlgd9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

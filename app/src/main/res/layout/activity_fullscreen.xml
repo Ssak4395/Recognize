@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:src="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/splash_logo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:theme="@style/ThemeOverlay.Recognize.FullscreenContainer"
+    tools:context=".Activities.Splash">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/splash_image"
+            android:layout_width="603dp"
+            android:layout_height="552dp"
+            android:src="@drawable/logo_png"
+            src:layout_constraintBottom_toBottomOf="parent"
+            src:layout_constraintEnd_toEndOf="parent"
+            src:layout_constraintStart_toStartOf="parent"
+            src:layout_constraintTop_toTopOf="parent"
+            src:layout_constraintVertical_bias="0.362" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

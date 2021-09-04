@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:andorid="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gradient_background"
+    android:theme="@style/ThemeOverlay.Recognize.FullscreenContainer"
+    tools:context=".Activities.Login">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/register_button_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/museosans_100"
+            android:text="Register"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            andorid:layout_constraintBottom_toBottomOf="parent"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toTopOf="parent"
+            andorid:layout_constraintVertical_bias="0.633" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/museosans_500"
+            android:text="Login"
+            android:textColor="@color/black"
+            android:textSize="50dp"
+            andorid:layout_constraintBottom_toBottomOf="parent"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toTopOf="parent"
+            andorid:layout_constraintVertical_bias="0.349" />
+
+        <EditText
+            android:id="@+id/editTextTextEmailAddress"
+            android:layout_width="312dp"
+            android:layout_height="48dp"
+            android:background="@drawable/rounded_rectangle"
+            android:ems="10"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:ellipsize="start"
+            android:elevation="30dp"
+            android:paddingLeft="20dp"
+            andorid:layout_constraintBottom_toBottomOf="parent"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintHorizontal_bias="0.552"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toTopOf="parent"
+            andorid:layout_constraintVertical_bias="0.466" />
+
+        <EditText
+            android:id="@+id/editTextTextPassword"
+            android:layout_width="312dp"
+            android:layout_height="47dp"
+            android:background="@drawable/rounded_rectangle"
+            android:ems="10"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:paddingLeft="20dp"
+            android:textColorHint="@color/black"
+            android:textColor="@color/black"
+            andorid:layout_constraintBottom_toBottomOf="parent"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintHorizontal_bias="0.552"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toTopOf="parent"
+            android:elevation="30dp"
+            andorid:layout_constraintVertical_bias="0.559" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="101dp"
+            android:layout_height="89dp"
+            android:background="@drawable/circular_button"
+            android:text="Go!"
+            android:textColor="@color/black"
+            android:elevation="30dp"
+            android:textSize="30dp"
+            andorid:layout_constraintBottom_toBottomOf="parent"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toTopOf="parent"
+            andorid:layout_constraintVertical_bias="0.931" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
