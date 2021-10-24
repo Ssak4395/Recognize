@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.recognize">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,10 +14,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Recognize">
         <activity
+            android:name=".Activities.Preview"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_preview"
+            android:theme="@style/Theme.Recognize.Fullscreen"></activity>
+        <activity
+            android:name=".Activities.CameraHome"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_camera_home"
+            android:theme="@style/Theme.Recognize.Fullscreen" />
+        <activity
             android:name=".Activities.Register"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_regsiter"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".Activities.Login"
             android:configChanges="orientation|keyboardHidden|screenSize"

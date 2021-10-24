@@ -6,4 +6,6 @@
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="title_activity_regsiter">FullscreenActivity</string>
+    <string name="title_activity_camera_home">FullscreenActivity</string>
+    <string name="title_activity_preview">FullscreenActivity</string>
 </resources>
