@@ -11,7 +11,7 @@
     <FrameLayout
         android:id="@+id/cameraView"
         android:layout_width="match_parent"
-        android:layout_height="616dp" />
+        android:layout_height="match_parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -30,8 +30,32 @@
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.961"
+                app:layout_constraintVertical_bias="0.975"
                 app:srcCompat="@drawable/capture" />
+
+            <ImageView
+                android:id="@+id/dictation_button"
+                android:layout_width="53dp"
+                android:layout_height="54dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.044"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.955"
+                app:srcCompat="@drawable/speaking" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="53dp"
+                android:layout_height="54dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.955"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.955"
+                app:srcCompat="@drawable/user" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

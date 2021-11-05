@@ -1,24 +1,54 @@
 package com.example.recognize.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
-import com.example.recognize.R;
 
+import com.example.recognize.R;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
+import java.util.Locale;
+
+import Utilities.GPSHandler;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -26,32 +56,99 @@ import java.io.OutputStream;
  */
 public class CameraHome extends AppCompatActivity {
 
-    private boolean safeToTakePicture = false;
     private Camera mCamera; // instance of the device camera
     private CameraView mPreview; //Instance of the camera preview frame
     private ImageView cameraBTN; // Button to capture photo in camera view
+    private ImageView dictateLocationBtn;
+    private LocationRequest locationRequest;
+    private TextToSpeech mTTS;
+
+
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_home);
+
         mCamera = getCameraInstance();
         cameraBTN = findViewById(R.id.cameraBTN);
         mPreview = new CameraView(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.cameraView);
         preview.addView(mPreview);
 
+        mTTS = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                int result = mTTS.setLanguage(Locale.GERMAN);
+
+                if (result == TextToSpeech.LANG_MISSING_DATA
+                        || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e("TTS", "Language not supported");
+                } else {
+                }
+            } else {
+                Log.e("TTS", "Initialization failed");
+            }
+        });
+
+
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(100000000);
+        locationRequest.setFastestInterval(1000000000);
+
+
         cameraBTN = findViewById(R.id.cameraBTN);
         // Create our Preview view and set it as the content of our activity.
         cameraBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                mCamera.takePicture(null,null,mPicture);
+                mCamera.takePicture(null, null, mPicture);
             }
         });
+
+        dictateLocationBtn = findViewById(R.id.dictation_button);
+        dictateLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onClick(View v) {
+                if (GPSHandler.isGPSEnablesd(CameraHome.this)) {
+
+                    LocationServices.getFusedLocationProviderClient(CameraHome.this).requestLocationUpdates(locationRequest, new LocationCallback() {
+                        @Override
+                        public void onLocationResult(@NonNull LocationResult locationResult) {
+                            super.onLocationResult(locationResult);
+
+                            LocationServices.getFusedLocationProviderClient(CameraHome.this).removeLocationUpdates(this);
+
+                            if(locationResult != null &&  locationResult.getLocations().size() > 0)
+                            {
+                                int idx = locationResult.getLocations().size() -1;
+
+                                try {
+                                   speak(getFullAddress(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude()));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }
+                    }, Looper.getMainLooper());
+                }
+                else
+                {
+                  turnOnGPS();
+                }
+            }
+        });
+
+
     }
+
+
+
+
 
     /**
      *
@@ -168,4 +265,87 @@ public class CameraHome extends AppCompatActivity {
     }
 
 
+
+    private void turnOnGPS() {
+
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        builder.setAlwaysShow(true);
+
+        Task<LocationSettingsResponse> result = LocationServices.getSettingsClient(getApplicationContext())
+                .checkLocationSettings(builder.build());
+
+        result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+
+                try {
+                    LocationSettingsResponse response = task.getResult(ApiException.class);
+                    Toast.makeText(CameraHome.this, "GPS is already tured on", Toast.LENGTH_SHORT).show();
+
+                } catch (ApiException e) {
+
+                    switch (e.getStatusCode()) {
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+
+                            try {
+                                ResolvableApiException resolvableApiException = (ResolvableApiException) e;
+                                resolvableApiException.startResolutionForResult(CameraHome.this, 2);
+                            } catch (IntentSender.SendIntentException ex) {
+                                ex.printStackTrace();
+                            }
+                            break;
+
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            //Device does not have location
+                            break;
+                    }
+                }
+            }
+        });
+
+    }
+
+
+
+    //We need to call this on a separate thread, I am too lazy to figure this out on a saturday night will solve soon sorry.
+    private String getFullAddress(double lat, double lon) throws IOException {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        String postalCode = addresses.get(0).getPostalCode();
+        String knownName = addresses.get(0).getFeatureName();
+
+        return "Your are currently located at " + address +
+                ", In the city" + city +
+                "Located in the state of " + state  +
+                " The current post code is " + postalCode;
+    }
+
+
+
+    private void speak(String textToSpeech) {
+        mTTS.setPitch(30);
+        mTTS.setSpeechRate(30);
+        mTTS.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+
+        super.onDestroy();
+    }
 }
