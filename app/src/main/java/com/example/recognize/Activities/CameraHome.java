@@ -1,6 +1,7 @@
 package com.example.recognize.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -18,6 +19,7 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.location.Address;
 import android.location.Geocoder;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
@@ -62,6 +64,7 @@ public class CameraHome extends AppCompatActivity {
     private ImageView dictateLocationBtn;
     private LocationRequest locationRequest;
     private TextToSpeech mTTS;
+    private String myLocation;
 
 
 
@@ -77,27 +80,15 @@ public class CameraHome extends AppCompatActivity {
         FrameLayout preview = (FrameLayout) findViewById(R.id.cameraView);
         preview.addView(mPreview);
 
-        mTTS = new TextToSpeech(this, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                int result = mTTS.setLanguage(Locale.GERMAN);
 
-                if (result == TextToSpeech.LANG_MISSING_DATA
-                        || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Log.e("TTS", "Language not supported");
-                } else {
-                }
-            } else {
-                Log.e("TTS", "Initialization failed");
-            }
-        });
-
-
-
+        // setups a location request object
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(100000000);
+        locationRequest.setInterval(100000000); //Poll location once only.
         locationRequest.setFastestInterval(1000000000);
 
+        startLocation();
+        initTTS();
 
         cameraBTN = findViewById(R.id.cameraBTN);
         // Create our Preview view and set it as the content of our activity.
@@ -110,36 +101,9 @@ public class CameraHome extends AppCompatActivity {
 
         dictateLocationBtn = findViewById(R.id.dictation_button);
         dictateLocationBtn.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
-                if (GPSHandler.isGPSEnablesd(CameraHome.this)) {
-
-                    LocationServices.getFusedLocationProviderClient(CameraHome.this).requestLocationUpdates(locationRequest, new LocationCallback() {
-                        @Override
-                        public void onLocationResult(@NonNull LocationResult locationResult) {
-                            super.onLocationResult(locationResult);
-
-                            LocationServices.getFusedLocationProviderClient(CameraHome.this).removeLocationUpdates(this);
-
-                            if(locationResult != null &&  locationResult.getLocations().size() > 0)
-                            {
-                                int idx = locationResult.getLocations().size() -1;
-
-                                try {
-                                   speak(getFullAddress(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude()));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                        }
-                    }, Looper.getMainLooper());
-                }
-                else
-                {
-                  turnOnGPS();
-                }
+              speak(myLocation);
             }
         });
 
@@ -265,11 +229,11 @@ public class CameraHome extends AppCompatActivity {
     }
 
 
+    /**
+     * Turns on the GPS
+     */
 
     private void turnOnGPS() {
-
-
-
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
@@ -309,6 +273,13 @@ public class CameraHome extends AppCompatActivity {
     }
 
 
+    /**
+     * Uses android geocoding to get the full location via lat and long coords
+     * @param lat
+     * @param lon
+     * @return
+     * @throws IOException
+     */
 
     //We need to call this on a separate thread, I am too lazy to figure this out on a saturday night will solve soon sorry.
     private String getFullAddress(double lat, double lon) throws IOException {
@@ -332,13 +303,21 @@ public class CameraHome extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Increases the volume of the device and calls the text to speech engine to speak text
+     * @param textToSpeech
+     */
     private void speak(String textToSpeech) {
-        mTTS.setPitch(30);
-        mTTS.setSpeechRate(30);
+        AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        int amStreamMusicMaxVol = am.getStreamMaxVolume(am.STREAM_MUSIC);
+        am.setStreamVolume(am.STREAM_MUSIC, amStreamMusicMaxVol, 0);
         mTTS.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null);
     }
 
+
+    /**
+     * When the view changes the text to speech is automatically stopped.
+     */
     @Override
     protected void onDestroy() {
         if (mTTS != null) {
@@ -347,5 +326,64 @@ public class CameraHome extends AppCompatActivity {
         }
 
         super.onDestroy();
+    }
+
+    /**
+     * Initializes the text to speech system.
+     */
+    private void initTTS()
+    {
+        mTTS = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                int result = mTTS.setLanguage(Locale.ENGLISH);
+                Log.d("TTS:","the result was" + result);
+
+
+                if (result == TextToSpeech.LANG_MISSING_DATA
+                        || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e("TTS", "Language not supported");
+                } else {
+
+                }
+            } else {
+                Log.e("TTS", "Initialization failed");
+            }
+        });
+
+    }
+
+    /**
+     * Uses the device GPS to start listening of location
+     */
+    @SuppressLint("MissingPermission")
+    private void startLocation()
+    {
+        if (GPSHandler.isGPSEnablesd(CameraHome.this)) {
+
+            LocationServices.getFusedLocationProviderClient(CameraHome.this).requestLocationUpdates(locationRequest, new LocationCallback() {
+                @Override
+                public void onLocationResult(@NonNull LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
+
+                    LocationServices.getFusedLocationProviderClient(CameraHome.this).removeLocationUpdates(this);
+
+                    if(locationResult != null &&  locationResult.getLocations().size() > 0)
+                    {
+                        int idx = locationResult.getLocations().size() -1;
+
+                        try {
+                            myLocation= getFullAddress(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }, Looper.getMainLooper());
+        }
+        else
+        {
+            turnOnGPS();
+        }
     }
 }

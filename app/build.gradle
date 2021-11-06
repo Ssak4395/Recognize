@@ -10,6 +10,7 @@ android {
     defaultConfig {
         applicationId "com.example.recognize"
         minSdkVersion 21
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"

@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 
 public class GPSHandler {
 
+    private String location;
     private LocationRequest locationRequest;
 
     public GPSHandler()
@@ -38,6 +39,16 @@ public class GPSHandler {
         isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         return isEnabled;
 
+    }
+
+    public  String getLocation()
+    {
+        return location;
+    }
+
+    public void setLocation(String loc)
+    {
+        this.location = loc;
     }
 
 }
