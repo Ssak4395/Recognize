@@ -1,17 +1,11 @@
 package com.example.recognize.Activities;
 
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.util.Size;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -19,10 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
-import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
-import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
@@ -31,15 +23,16 @@ import androidx.core.content.ContextCompat;
 
 import com.example.recognize.R;
 import com.example.recognize.databinding.ActivityCameraBinding;
-import com.example.recognize.network.AzureApiService;
-import com.google.android.gms.common.Feature;
-import com.google.android.gms.common.util.IOUtils;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.example.recognize.network.AzureApiResponse;
+import com.example.recognize.network.AzureCaption;
+import com.example.recognize.network.AzureDescription;
+import com.example.recognize.network.AzureManagerService;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -48,10 +41,23 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+/**
+ * The Camera activity extends from {@link AppCompatActivity} and is responsible for displaying
+ * a custom camera view.
+ */
 public class Camera extends AppCompatActivity {
 
     private int REQUEST_CODE_PERMISSIONS = 101;
-    private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE"};
+    private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA",
+            "android.permission.WRITE_EXTERNAL_STORAGE"};
     private final String TAG = "CameraXBasic";
     private final String FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
 
@@ -71,7 +77,6 @@ public class Camera extends AppCompatActivity {
         // use layout binding for safety
         binding = ActivityCameraBinding.inflate(this.getLayoutInflater());
         setContentView(binding.getRoot());
-//        getSupportActionBar().hide();
 
         // request camera permission
         if (allPermissionsGranted()) {
@@ -84,9 +89,8 @@ public class Camera extends AppCompatActivity {
         cameraCaptureButton = binding.cameraCaptureButton;
         cameraCaptureButton.setOnClickListener(v -> takePhoto());
 
-//        viewFinder = findViewById(R.id.camera_view_finder);
+        // camera view
         viewFinder = binding.cameraViewFinder;
-
 
         // get the output directory
         outputDirectory = getOutputDirectory();
@@ -94,14 +98,15 @@ public class Camera extends AppCompatActivity {
         // camera executor thread
         cameraExecutor = Executors.newSingleThreadExecutor();
 
-        //
-
 
     }
 
 
-
-
+    /**
+     * takePhoto is responsible for capturing the image currently displayed in the camera view,
+     * saving
+     * to a file for temporary storage initiates the azure analysis.
+     */
     private void takePhoto() {
         // needed in case imageCapture has changed.
         imageCapture = imageCapture;
@@ -111,145 +116,102 @@ public class Camera extends AppCompatActivity {
         String date = df.format(new Date());
         File photoFile = new File(outputDirectory, df.format(System.currentTimeMillis()) + ".jpg");
 
-        ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions.Builder(photoFile).build();
+        ImageCapture.OutputFileOptions outputOptions =
+                new ImageCapture.OutputFileOptions.Builder(photoFile).build();
 
 
-        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(this), new ImageCapture.OnImageSavedCallback() {
-            @Override
-            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                Uri savedUri = Uri.fromFile(photoFile);
-
-                AzureApiService azureApiService = new AzureApiService();
-                BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-
-                azureApiService.getResultFromAPI(photoFile);
-//
-//                Image theImage = image.getImage();
-//                assert theImage != null;
-//
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        String res =
-//
-//
-//                    }
-//                }).start();
-
-
-                new Handler().post(new Runnable() {
+        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
+                new ImageCapture.OnImageSavedCallback() {
                     @Override
-                    public void run() {
-                        Toast.makeText(Camera.this, "Image saved successfully :" + savedUri, Toast.LENGTH_SHORT).show();
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        Uri savedUri = Uri.fromFile(photoFile);
+
+                        BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+
+                        getResultFromAzure(photoFile);
+
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(Camera.this, "Processing",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(@NonNull ImageCaptureException exception) {
+                        Log.e(TAG, "Photo capture failed", exception);
+
                     }
                 });
-                // uri
-                // msg
-                // toast
-            }
-
-            @Override
-            public void onError(@NonNull ImageCaptureException exception) {
-                Log.e(TAG, "Photo capture failed", exception);
-
-            }
-        });
 
     }
 
+    /**
+     * Uploads an image file to azure cognitive services api for analysis. Displays a toast with
+     * result on success.
+     *
+     * @param imageFile an image file.
+     */
+    public void getResultFromAzure(File imageFile) {
+        byte[] bytes = new byte[(int) imageFile.length()];
 
-//    public void sendImageForCloudProcessing() {
-//        long startTime = System.currentTimeMillis();
-//
-//
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.d("MainActivity", "Running async task to get details ");
-//
-//
-//                try {
-//                    Vision.Builder visionBuilder = new Vision.Builder(
-//                            new NetHttpTransport(),
-//                            new AndroidJsonFactory(),
-//                            null
-//                    );
-//
-//                    visionBuilder.setVisionRequestInitializer(new VisionRequestInitializer("AIzaSyAQHKLvpOSHY1AfjyhB39OLJkbMH7Oc-go"));
-//
-//                    Vision vision = visionBuilder.build();
-//
-//                    // Encode the photo as Cloud vision API expects input image to be a base64 string inside an Image object
-//                    InputStream inputStream = getResources().openRawResource(R.raw.photo);
-//                    byte[] photoData = IOUtils.toByteArray(inputStream);
-//                    inputStream.close();
-//
-//                    // Create image object, add byte to it as a base64 string, pass array to the encodecontent.
-//                    Image inputImage = new Image();
-//                    inputImage.encodeContent(photoData);
-//
-//                    // Make a request
-//                    Feature desiredFeature = new Feature();
-//                    desiredFeature.setType("FACE_DETECTION");
-//
-//                    // compose an annotateimagerequest instance
-//                    AnnotateImageRequest request = new AnnotateImageRequest();
-//                    request.setImage(inputImage);
-//                    request.setFeatures(Arrays.asList(desiredFeature));
-//
-//                    // request needs to belong to a batch annotate request object because the vision API is designed to process
-//                    // multiple images at once.
-//                    BatchAnnotateImagesRequest batchRequest = new BatchAnnotateImagesRequest();
-//                    batchRequest.setRequests(Arrays.asList(request));
-//
-//
-//                    BatchAnnotateImagesResponse batchResponse = vision.images().annotate(batchRequest).execute();
-//
-//                    long endTime = System.currentTimeMillis();
-//                    Log.d("MainActivity", "start: " + startTime + "\nend: " + endTime);
-//
-//
-//                    // use response
-//                    List<FaceAnnotation> faces = batchResponse.getResponses().get(0).getFaceAnnotations();
-//
-//                    int numberOfFaces = faces.size();
-//
-//                    // get joy likelihood for each face
-//                    String likelihoods = "";
-//                    for (int i = 0; i < numberOfFaces; i++) {
-//                        likelihoods += "\n It is " + faces.get(i).getJoyLikelihood() + " that face " + i + " is happy";
-//                    }
-//
-//                    final String message = "This photo has " + numberOfFaces + "  faces" + likelihoods;
-//                    Log.d("MainActivity", message);
-//
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-//                        }
-//                    });
-//
-//
-//                } catch (IOException e) {
-//                    Log.d("MainActivity", "Didn't work");
-//                    e.printStackTrace();
-//                }
-//
-//
-//            }
-//        });
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(imageFile);
+            fis.read(bytes);
 
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/octet" +
+                    "-stream"), bytes);
+            Retrofit retrofit = new Retrofit.Builder().baseUrl("https://recognizeelec5620" +
+                    ".cognitiveservices.azure.com").addConverterFactory(GsonConverterFactory.create()).build();
+            AzureManagerService service = retrofit.create(AzureManagerService.class);
 
+            String key = getResources().getString(R.string.azure_key);
+            Call<AzureApiResponse> postPhotoCall = service.postPhoto("application/octet-stream",
+                    key, requestBody);
 
+            postPhotoCall.enqueue(new Callback<AzureApiResponse>() {
+                @Override
+                public void onResponse(Call<AzureApiResponse> call,
+                                       Response<AzureApiResponse> response) {
+                    Log.d(TAG, "successful response from azure ");
+                    Log.d(TAG, "onResponse: " + response);
+                    Log.d(TAG, "onResponse: " + response.body());
+                    assert response.body() != null;
+                    AzureApiResponse apiResponse = response.body();
+                    AzureDescription azureDescription = apiResponse.getDescription();
+                    AzureCaption topCaption = azureDescription.getCaptions().get(0);
+                    if (topCaption != null) {
+                        String description = topCaption.getText();
+                        Toast.makeText(Camera.this, description, Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d(TAG,
+                            "onResponse: " + response.body().getDescription().getCaptions().get(0).getText());
+                }
 
+                @Override
+                public void onFailure(Call<AzureApiResponse> call, Throwable t) {
+                    Log.d(TAG, "FAILED response from azure " + t);
 
+                }
+            });
 
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-
-        private void startCamera() {
-        ListenableFuture<ProcessCameraProvider> cameraProviderListenableFuture = ProcessCameraProvider.getInstance(this);
+    /**
+     * Start camera creates the camera provider and sets the surface
+     */
+    private void startCamera() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderListenableFuture =
+                ProcessCameraProvider.getInstance(this);
 
         cameraProviderListenableFuture.addListener(new Runnable() {
             @Override
@@ -264,84 +226,16 @@ public class Camera extends AppCompatActivity {
 
                     imageCapture = new ImageCapture.Builder().build();
 
-
-//                    ImageAnalysis imageAnalyzer = new ImageAnalysis.Builder().setTargetResolution(
-//                            new Size(224, 225))
-//                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-//                            .build();
-//
-//                    imageAnalyzer.setAnalyzer(cameraExecutor, new ImageAnalysis.Analyzer() {
-//                        @SuppressLint("UnsafeOptInUsageError")
-//                        @Override
-//                        public void analyze(@NonNull ImageProxy image) {
-//                            int rotationDegrees = image.getImageInfo().getRotationDegrees();
-//
-//
-//                            AzureApiService azureApiService = new AzureApiService();
-//                            Image theImage = image.getImage();
-//                            assert theImage != null;
-//
-//                            new Thread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    String res = azureApiService.getResultFromAPI(theImage);
-//
-//
-//                                }
-//                            }).start();
-
-
-
-
-//                            @SuppressLint("UnsafeOptInUsageError") android.media.Image mediaImage = image.getImage();
-//                            assert mediaImage != null;
-//                            InputImage img = InputImage.fromMediaImage(mediaImage, image.getImageInfo().getRotationDegrees());
-//
-//
-//
-//
-//
-//                            objectDetector.process(img)
-//                                    .addOnSuccessListener(
-//                                            new OnSuccessListener<List<DetectedObject>>() {
-//                                                @Override
-//                                                public void onSuccess(@NonNull List<DetectedObject> detectedObjects) {
-//                                                    //successful analysis
-//                                                    for (DetectedObject dObj : detectedObjects) {
-//                                                        for (DetectedObject.Label label : dObj.getLabels()) {
-//                                                            Log.d(TAG, "success: " + label.getText());
-//                                                        }
-//
-//                                                    }
-//                                                    image.close();
-//                                                }
-//                                            }
-//                                    ).addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//                                    // failed
-//                                    image.close();
-//                                    Log.e(TAG, "Analyzing image failed");
-//                                    e.printStackTrace();
-//                                }
-//                            });
-
-//                        }
-//                    });
-
-
                     CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
 
                     try {
                         cameraProvider.unbindAll();
 
-                        cameraProvider.bindToLifecycle(Camera.this, cameraSelector, preview, imageCapture);
+                        cameraProvider.bindToLifecycle(Camera.this, cameraSelector, preview,
+                                imageCapture);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-
-
-                    //bindPreview(cameraProvider)
 
 
                 } catch (Exception ex) {
@@ -352,12 +246,10 @@ public class Camera extends AppCompatActivity {
 
     }
 
-
-
-
-
-
-
+    /**
+     * checks if all permissions have been granted.
+     * @return boolean value of result.
+     */
     private boolean allPermissionsGranted() {
         for (String permission : REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -367,8 +259,12 @@ public class Camera extends AppCompatActivity {
         return true;
     }
 
-
-
+    /**
+     * After permissions are requested, the camera will start.
+     * @param requestCode code of request
+     * @param permissions permissions array
+     * @param grantResults permission results
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -381,8 +277,10 @@ public class Camera extends AppCompatActivity {
         }
     }
 
-
-
+    /**
+     * Gets the output directory for files or creates if one not already present.
+     * @return the file output directory
+     */
     private File getOutputDirectory() {
         Optional<File> mediaDirOpt = Arrays.stream(getExternalMediaDirs()).findFirst();
         if (mediaDirOpt.isPresent()) {
@@ -400,15 +298,14 @@ public class Camera extends AppCompatActivity {
 
     }
 
-
-
-
+    /**
+     * Destroys the camera view when finished
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         cameraExecutor.shutdown();
     }
-
 
 
 }
