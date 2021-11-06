@@ -91,7 +91,7 @@ public class Login extends AppCompatActivity {
 
                             if(user != null)
                             {
-                                Intent intent = new Intent(Login.this,CameraHome.class );
+                                Intent intent = new Intent(Login.this,Camera.class );
                                 startActivity(intent);
                             }
 
