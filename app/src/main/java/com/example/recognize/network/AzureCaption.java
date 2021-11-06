@@ -2,6 +2,9 @@ package com.example.recognize.network;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Azure response object. A caption is a full sentence description of the image.
+ */
 public class AzureCaption {
     @SerializedName("text")
     String text;

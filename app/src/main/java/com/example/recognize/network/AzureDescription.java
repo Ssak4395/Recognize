@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+/**
+ * Azure response object, description contains captions and tags.
+ */
 public class AzureDescription {
     @SerializedName("captions")
     ArrayList<AzureCaption> captions;

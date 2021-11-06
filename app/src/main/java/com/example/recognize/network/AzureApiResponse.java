@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Top level part of Azure JSON response
+ */
 public class AzureApiResponse implements Serializable {
     @SerializedName("description")
     private AzureDescription description;
@@ -20,53 +23,3 @@ public class AzureApiResponse implements Serializable {
     }
 }
 
-
-//class AzureDescription{
-//    @SerializedName("captions")
-//    ArrayList<AzureCaption> captions;
-//    @SerializedName("tags")
-//    ArrayList<String> tags;
-//
-//    AzureDescription(){};
-//
-//    public ArrayList<AzureCaption> getCaptions() {
-//        return captions;
-//    }
-//
-//    public void setCaptions(ArrayList<AzureCaption> captions) {
-//        this.captions = captions;
-//    }
-//
-//    public ArrayList<String> getTags() {
-//        return tags;
-//    }
-//
-//    public void setTags(ArrayList<String> tags) {
-//        this.tags = tags;
-//    }
-//}
-
-//class AzureCaption{
-//    @SerializedName("text")
-//    String text;
-//    @SerializedName("confidence")
-//    double confidence;
-//
-//    AzureCaption(){}
-//
-//    public String getText() {
-//        return text;
-//    }
-//
-//    public void setText(String text) {
-//        this.text = text;
-//    }
-//
-//    public double getConfidence() {
-//        return confidence;
-//    }
-//
-//    public void setConfidence(double confidence) {
-//        this.confidence = confidence;
-//    }
-//}
