@@ -1,10 +1,13 @@
 package com.example.recognize.Activities;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -71,6 +74,8 @@ public class CameraHome extends AppCompatActivity {
     private ImageView cameraCaptureButton;
     private ActivityCameraHomeBinding binding;
 
+    private TextToSpeech mTTS;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +103,8 @@ public class CameraHome extends AppCompatActivity {
 
         // camera executor thread
         cameraExecutor = Executors.newSingleThreadExecutor();
+
+        initTTS();
 
 
     }
@@ -187,9 +194,11 @@ public class CameraHome extends AppCompatActivity {
                     if (topCaption != null) {
                         String description = topCaption.getText();
                         Toast.makeText(CameraHome.this, description, Toast.LENGTH_SHORT).show();
+                        speak(description);
                     }
                     Log.d(TAG,
                             "onResponse: " + response.body().getDescription().getCaptions().get(0).getText());
+
                 }
 
                 @Override
@@ -309,7 +318,50 @@ public class CameraHome extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         cameraExecutor.shutdown();
+
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+
+        super.onDestroy();
     }
+
+
+    /** Increases the volume of the device and calls the text to speech engine to speak text
+     * @param textToSpeech
+     */
+    private void speak(String textToSpeech) {
+        AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        int amStreamMusicMaxVol = am.getStreamMaxVolume(am.STREAM_MUSIC);
+        am.setStreamVolume(am.STREAM_MUSIC, amStreamMusicMaxVol, 0);
+        mTTS.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    /**
+     * Initializes the text to speech system.
+     */
+    private void initTTS()
+    {
+        mTTS = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                int result = mTTS.setLanguage(Locale.ENGLISH);
+                Log.d("TTS:","the result was" + result);
+
+
+                if (result == TextToSpeech.LANG_MISSING_DATA
+                        || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e("TTS", "Language not supported");
+                } else {
+
+                }
+            } else {
+                Log.e("TTS", "Initialization failed");
+            }
+        });
+
+    }
+
 
 
 }
