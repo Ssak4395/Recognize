@@ -205,8 +205,6 @@ public class CameraHome extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         Log.d(TAG, "SUCCESS response from azure");
                         if (response.body() != null) {
-
-                            Log.d(TAG, "response body: " + response.body());
                             AzureApiResponse apiResponse = response.body();
                             AzureDescription azureDescription = apiResponse.getDescription();
                             AzureCaption topCaption = azureDescription.getCaptions().get(0);
