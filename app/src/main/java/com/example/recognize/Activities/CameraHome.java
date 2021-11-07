@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.widget.ImageView;
@@ -76,6 +80,8 @@ public class CameraHome extends AppCompatActivity {
 
     private TextToSpeech mTTS;
 
+    private boolean isNetworkConnected;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +111,7 @@ public class CameraHome extends AppCompatActivity {
         cameraExecutor = Executors.newSingleThreadExecutor();
 
         initTTS();
-
+        registerNetworkCallback();
 
     }
 
@@ -136,15 +142,25 @@ public class CameraHome extends AppCompatActivity {
 
                         BitmapFactory.decodeFile(photoFile.getAbsolutePath());
 
-                        getResultFromAzure(photoFile);
+                        if(!isNetworkConnected){
+                            String toSpeak = "Please check your network connection and try again";
+                            speak(toSpeak);
+                            Toast.makeText(CameraHome.this, toSpeak,
+                                    Toast.LENGTH_SHORT).show();
 
-                        new Handler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(CameraHome.this, "Processing",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        } else {
+                            getResultFromAzure(photoFile);
+
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(CameraHome.this, "Processing image",
+                                            Toast.LENGTH_SHORT).show();
+                                    speak("Processing image");
+                                }
+                            });
+                        }
+
                     }
 
                     @Override
@@ -184,26 +200,40 @@ public class CameraHome extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<AzureApiResponse> call,
                                        Response<AzureApiResponse> response) {
-                    Log.d(TAG, "successful response from azure ");
                     Log.d(TAG, "onResponse: " + response);
-                    Log.d(TAG, "onResponse: " + response.body());
-                    assert response.body() != null;
-                    AzureApiResponse apiResponse = response.body();
-                    AzureDescription azureDescription = apiResponse.getDescription();
-                    AzureCaption topCaption = azureDescription.getCaptions().get(0);
-                    if (topCaption != null) {
-                        String description = topCaption.getText();
-                        Toast.makeText(CameraHome.this, description, Toast.LENGTH_SHORT).show();
-                        speak(description);
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "onResponse: SUCCESS");
+                        if (response.body() != null) {
+
+                            Log.d(TAG, "onResponse: " + response.body());
+                            AzureApiResponse apiResponse = response.body();
+                            AzureDescription azureDescription = apiResponse.getDescription();
+                            AzureCaption topCaption = azureDescription.getCaptions().get(0);
+                            if (topCaption != null) {
+                                Log.d(TAG,
+                                        "onResponse: " + response.body().getDescription().getCaptions().get(0).getText());
+                                String description = topCaption.getText();
+                                Toast.makeText(CameraHome.this, description, Toast.LENGTH_LONG).show();
+                                speak(description);
+                            }
+
+                        }
+                    } else {
+                        Log.d(TAG, "onResponse: FAILURE");
+                        String toSpeak = "Please try again";
+                        Toast.makeText(CameraHome.this, toSpeak, Toast.LENGTH_LONG).show();
+                        speak(toSpeak);
                     }
-                    Log.d(TAG,
-                            "onResponse: " + response.body().getDescription().getCaptions().get(0).getText());
+
 
                 }
 
                 @Override
                 public void onFailure(Call<AzureApiResponse> call, Throwable t) {
                     Log.d(TAG, "FAILED response from azure " + t);
+                    String toSpeak = "Please try again";
+                    Toast.makeText(CameraHome.this, toSpeak, Toast.LENGTH_LONG).show();
+                    speak(toSpeak);
 
                 }
             });
@@ -361,6 +391,39 @@ public class CameraHome extends AppCompatActivity {
         });
 
     }
+
+
+    /**
+     * setup of a callback that changes the isNetworkConnected variable depending on
+     * the connectivity status.
+     */
+    private void registerNetworkCallback() {
+        try {
+            ConnectivityManager connectivityManager =
+                    (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkRequest.Builder builder = new NetworkRequest.Builder();
+
+            connectivityManager.registerDefaultNetworkCallback(
+                    new ConnectivityManager.NetworkCallback() {
+                        @Override
+                        public void onAvailable(@NonNull Network network) {
+                            isNetworkConnected = true;
+                        }
+
+                        @Override
+                        public void onLost(@NonNull Network network) {
+                            isNetworkConnected = false;
+                        }
+                    });
+
+            isNetworkConnected = false;
+
+        } catch (Exception e) {
+            isNetworkConnected = false;
+        }
+    }
+
+
 
 
 
