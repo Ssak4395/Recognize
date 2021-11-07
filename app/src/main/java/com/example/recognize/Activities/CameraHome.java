@@ -10,7 +10,6 @@ import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.widget.ImageView;
@@ -34,6 +33,7 @@ import com.example.recognize.network.AzureApiResponse;
 import com.example.recognize.network.AzureCaption;
 import com.example.recognize.network.AzureDescription;
 import com.example.recognize.network.AzureManagerService;
+import com.example.recognize.network.RetrofitInstance;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
@@ -54,7 +54,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -63,7 +62,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CameraHome extends AppCompatActivity {
 
 
-    private int REQUEST_CODE_PERMISSIONS = 101;
+    private final int REQUEST_CODE_PERMISSIONS = 101;
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA",
             "android.permission.WRITE_EXTERNAL_STORAGE"};
     private final String TAG = "CameraXBasic";
@@ -81,6 +80,7 @@ public class CameraHome extends AppCompatActivity {
     private TextToSpeech mTTS;
 
     private boolean isNetworkConnected;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -142,10 +142,10 @@ public class CameraHome extends AppCompatActivity {
 
                         BitmapFactory.decodeFile(photoFile.getAbsolutePath());
 
-                        if(!isNetworkConnected){
-                            String toSpeak = "Please check your network connection and try again";
-                            speak(toSpeak);
-                            Toast.makeText(CameraHome.this, toSpeak,
+                        if (!isNetworkConnected) {
+//                            String toSpeak = "Please check your network connection and try again";
+                            speak(getString(R.string.check_connection));
+                            Toast.makeText(CameraHome.this, R.string.check_connection,
                                     Toast.LENGTH_SHORT).show();
 
                         } else {
@@ -154,13 +154,12 @@ public class CameraHome extends AppCompatActivity {
                             new Handler().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(CameraHome.this, "Processing image",
+                                    Toast.makeText(CameraHome.this, R.string.processing_image,
                                             Toast.LENGTH_SHORT).show();
-                                    speak("Processing image");
+                                    speak(getResources().getString(R.string.processing_image));
                                 }
                             });
                         }
-
                     }
 
                     @Override
@@ -186,12 +185,14 @@ public class CameraHome extends AppCompatActivity {
             fis = new FileInputStream(imageFile);
             fis.read(bytes);
 
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/octet" +
-                    "-stream"), bytes);
-            Retrofit retrofit = new Retrofit.Builder().baseUrl("https://recognizeelec5620" +
-                    ".cognitiveservices.azure.com").addConverterFactory(GsonConverterFactory.create()).build();
+            // Get retrofit singleton
+            Retrofit retrofit = RetrofitInstance.getInstance();
+            // Use azure manager for JSON conversion.
             AzureManagerService service = retrofit.create(AzureManagerService.class);
 
+            // Create request
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/octet" +
+                    "-stream"), bytes);
             String key = getResources().getString(R.string.azure_key);
             Call<AzureApiResponse> postPhotoCall = service.postPhoto("application/octet-stream",
                     key, requestBody);
@@ -200,41 +201,35 @@ public class CameraHome extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<AzureApiResponse> call,
                                        Response<AzureApiResponse> response) {
-                    Log.d(TAG, "onResponse: " + response);
+                    Log.d(TAG, "azure response: " + response);
                     if (response.isSuccessful()) {
-                        Log.d(TAG, "onResponse: SUCCESS");
+                        Log.d(TAG, "SUCCESS response from azure");
                         if (response.body() != null) {
 
-                            Log.d(TAG, "onResponse: " + response.body());
+                            Log.d(TAG, "response body: " + response.body());
                             AzureApiResponse apiResponse = response.body();
                             AzureDescription azureDescription = apiResponse.getDescription();
                             AzureCaption topCaption = azureDescription.getCaptions().get(0);
                             if (topCaption != null) {
                                 Log.d(TAG,
-                                        "onResponse: " + response.body().getDescription().getCaptions().get(0).getText());
+                                        "top description: " + response.body().getDescription().getCaptions().get(0).getText());
                                 String description = topCaption.getText();
                                 Toast.makeText(CameraHome.this, description, Toast.LENGTH_LONG).show();
                                 speak(description);
                             }
-
                         }
                     } else {
-                        Log.d(TAG, "onResponse: FAILURE");
-                        String toSpeak = "Please try again";
-                        Toast.makeText(CameraHome.this, toSpeak, Toast.LENGTH_LONG).show();
-                        speak(toSpeak);
+                        Log.d(TAG, "FAILURE response from azure");
+                        Toast.makeText(CameraHome.this, R.string.try_again, Toast.LENGTH_LONG).show();
+                        speak(getResources().getString(R.string.try_again));
                     }
-
-
                 }
 
                 @Override
                 public void onFailure(Call<AzureApiResponse> call, Throwable t) {
                     Log.d(TAG, "FAILED response from azure " + t);
-                    String toSpeak = "Please try again";
-                    Toast.makeText(CameraHome.this, toSpeak, Toast.LENGTH_LONG).show();
-                    speak(toSpeak);
-
+                    Toast.makeText(CameraHome.this, R.string.try_again, Toast.LENGTH_LONG).show();
+                    speak(getResources().getString(R.string.try_again));
                 }
             });
 
@@ -358,11 +353,13 @@ public class CameraHome extends AppCompatActivity {
     }
 
 
-    /** Increases the volume of the device and calls the text to speech engine to speak text
+    /**
+     * Increases the volume of the device and calls the text to speech engine to speak text
+     *
      * @param textToSpeech
      */
     private void speak(String textToSpeech) {
-        AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         int amStreamMusicMaxVol = am.getStreamMaxVolume(am.STREAM_MUSIC);
         am.setStreamVolume(am.STREAM_MUSIC, amStreamMusicMaxVol, 0);
         mTTS.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null);
@@ -371,12 +368,11 @@ public class CameraHome extends AppCompatActivity {
     /**
      * Initializes the text to speech system.
      */
-    private void initTTS()
-    {
+    private void initTTS() {
         mTTS = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
                 int result = mTTS.setLanguage(Locale.ENGLISH);
-                Log.d("TTS:","the result was" + result);
+                Log.d("TTS:", "the result was" + result);
 
 
                 if (result == TextToSpeech.LANG_MISSING_DATA
@@ -422,9 +418,6 @@ public class CameraHome extends AppCompatActivity {
             isNetworkConnected = false;
         }
     }
-
-
-
 
 
 }
