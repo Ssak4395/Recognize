@@ -18,7 +18,21 @@
         android:src="@drawable/capture"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/capture_image_for_description"/>
+
+    <ImageView
+        android:id="@+id/logout_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_baseline_logout_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="2dp"
+        android:layout_margin="12dp"
+        app:tint="@color/white"
+        android:contentDescription="@string/log_out_button"/>
 
 
     <androidx.camera.view.PreviewView

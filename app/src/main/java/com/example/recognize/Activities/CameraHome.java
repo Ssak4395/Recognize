@@ -1,6 +1,8 @@
 package com.example.recognize.Activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
@@ -34,7 +37,11 @@ import com.example.recognize.network.AzureCaption;
 import com.example.recognize.network.AzureDescription;
 import com.example.recognize.network.AzureManagerService;
 import com.example.recognize.network.RetrofitInstance;
+import com.example.recognize.utils.Utils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -75,11 +82,14 @@ public class CameraHome extends AppCompatActivity {
     private PreviewView viewFinder;
 
     private ImageView cameraCaptureButton;
+    private ImageView logoutButton;
     private ActivityCameraHomeBinding binding;
 
     private TextToSpeech mTTS;
 
     private boolean isNetworkConnected;
+
+    private FirebaseAuth mAuth;
 
 
     @Override
@@ -89,6 +99,9 @@ public class CameraHome extends AppCompatActivity {
         // use layout binding for safety
         binding = ActivityCameraHomeBinding.inflate(this.getLayoutInflater());
         setContentView(binding.getRoot());
+
+        //
+        mAuth = FirebaseAuth.getInstance();
 
         // request camera permission
         if (allPermissionsGranted()) {
@@ -101,6 +114,10 @@ public class CameraHome extends AppCompatActivity {
         cameraCaptureButton = binding.cameraCaptureButton;
         cameraCaptureButton.setOnClickListener(v -> takePhoto());
 
+        // setup logout button
+        logoutButton = binding.logoutButton;
+        logoutButton.setOnClickListener(v -> logoutDialog());
+
         // camera view
         viewFinder = binding.cameraViewFinder;
 
@@ -112,6 +129,8 @@ public class CameraHome extends AppCompatActivity {
 
         initTTS();
         registerNetworkCallback();
+
+
 
     }
 
@@ -418,4 +437,56 @@ public class CameraHome extends AppCompatActivity {
     }
 
 
+    /**
+     * Logs the current user out
+     */
+    public void logout(){
+        mAuth.signOut();
+        Intent intent = new Intent(CameraHome.this, Login.class);
+        startActivity(intent);
+
+
+    }
+
+    /**
+     * Checks the user intended to press the log out button
+     */
+    public void logoutDialog(){
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to log out?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        logout();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                });
+        alertBuilder.create().show();
+
+
+    }
+
+
+    /**
+     * override on start to check if user is authenticated before proceeding.
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser == null){
+            Intent intent = new Intent(CameraHome.this, Login.class);
+            startActivity(intent);
+        }
+
+
+    }
 }
