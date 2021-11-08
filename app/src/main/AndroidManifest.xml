@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-feature android:name="android.hardware.camera.any" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -14,15 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Recognize">
         <activity
-            android:name=".Activities.Preview"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_preview"
-            android:theme="@style/Theme.Recognize.Fullscreen"></activity>
-        <activity
             android:name=".Activities.CameraHome"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_camera_home"
-            android:theme="@style/Theme.Recognize.Fullscreen" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+<!--        <activity-->
+<!--            android:name=".Activities.CameraHome"-->
+<!--            android:configChanges="orientation|keyboardHidden|screenSize"-->
+<!--            android:label="@string/title_activity_camera_home"-->
+<!--            android:theme="@style/Theme.Recognize.Fullscreen" />-->
         <activity
             android:name=".Activities.Register"
             android:configChanges="orientation|keyboardHidden|screenSize"

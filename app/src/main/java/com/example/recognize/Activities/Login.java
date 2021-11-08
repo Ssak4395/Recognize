@@ -1,23 +1,19 @@
 package com.example.recognize.Activities;
 
-import android.annotation.SuppressLint;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.recognize.R;
+import com.example.recognize.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -49,6 +45,17 @@ public class Login extends AppCompatActivity {
         login = findViewById(R.id.login_button);
         email = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextTextPassword);
+
+        setupButtonListeners();
+        setupOutsideClickListener();
+
+    }
+
+
+    /**
+     * Helper function to setup button listeners for this activity
+     */
+    public void setupButtonListeners() {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,25 +66,23 @@ public class Login extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean validlogin = validLoginCredentials(email,password);
-                if(validlogin)
-                {
-                    loginUser(email.getText().toString(),password.getText().toString());
+                boolean validlogin = validLoginCredentials(email, password);
+                if (validlogin) {
+                    loginUser(email.getText().toString(), password.getText().toString());
 
                 }
             }
         });
-
     }
 
 
     /**
-     * This is self explanatory
-     * @param email
-     * @param password
+     * Used to login an existing user
+     *
+     * @param email    email of user
+     * @param password password of user
      */
-    public void loginUser(String email, String password)
-    {
+    public void loginUser(String email, String password) {
         FirebaseUser user = null;
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -86,12 +91,11 @@ public class Login extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("Successful!", "signInWithEmail:success");
-                            Toast.makeText(Login.this,"Successful login!!",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login.this, "Successful login!", Toast.LENGTH_LONG).show();
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            if(user != null)
-                            {
-                                Intent intent = new Intent(Login.this,CameraHome.class );
+                            if (user != null) {
+                                Intent intent = new Intent(Login.this, CameraHome.class);
                                 startActivity(intent);
                             }
 
@@ -107,33 +111,37 @@ public class Login extends AppCompatActivity {
 
 
     /**
+     * Checks email/password text fields for valid input
      *
-     * @param field1
-     * @param field2
-     * @return
+     * @param field1 email text field
+     * @param field2 password text field
+     * @return boolean depending on if the input is valid
      */
-    public boolean validLoginCredentials(EditText field1, EditText field2)
-    {
+    public boolean validLoginCredentials(EditText field1, EditText field2) {
         // Lets firstly check none of the fields are empty.
-        if(field1.getText().length() > 1  && field2.getText().length() > 1)
-        {
+        if (field1.getText().length() > 1 && field2.getText().length() > 1) {
             // Lets check if field1 is a valid email
-
             Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
             Matcher mat = pattern.matcher(field1.getText());
             boolean isMatch = mat.matches();
 
-            if(isMatch)
-            {
+            if (isMatch) {
                 return true;
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
 
         return false;
+    }
+
+
+    /**
+     * Helper function to hide soft keyboard when clicking outside text field {@link Utils}
+     */
+    private void setupOutsideClickListener() {
+        Utils.setUpCloseKeyboardOnOutsideClick(getWindow().getDecorView().getRootView(),
+                Login.this);
     }
 
 
