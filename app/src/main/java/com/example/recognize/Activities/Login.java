@@ -35,7 +35,10 @@ public class Login extends AppCompatActivity {
     Button login;
     EditText email;
     EditText password;
-
+    TextView errorText1;
+    TextView errorText2;
+    TextView errorText3;
+    TextView errorText4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +48,15 @@ public class Login extends AppCompatActivity {
         login = findViewById(R.id.login_button);
         email = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextTextPassword);
-
+        errorText1 = findViewById(R.id.login_Error_text_1);//Empty input
+        errorText2 = findViewById(R.id.login_Error_text_2);//No user found
+        errorText3 = findViewById(R.id.login_Error_text_3);//No @ sign in email
+        errorText4 = findViewById(R.id.login_Error_text_4);//No @ sign in email
         setupButtonListeners();
         setupOutsideClickListener();
 
     }
+
 
 
     /**
@@ -66,10 +73,15 @@ public class Login extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                errorText1.setVisibility(View.INVISIBLE);
+                errorText2.setVisibility(View.INVISIBLE);
+                errorText3.setVisibility(View.INVISIBLE);
+                errorText4.setVisibility(View.INVISIBLE);
                 boolean validlogin = validLoginCredentials(email, password);
                 if (validlogin) {
                     loginUser(email.getText().toString(), password.getText().toString());
-
+                }else{
+//                    errorText2.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -95,11 +107,17 @@ public class Login extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             if (user != null) {
+                                errorText2.setVisibility(View.VISIBLE);
                                 Intent intent = new Intent(Login.this, CameraHome.class);
                                 startActivity(intent);
                             }
 
                         } else {
+                            errorText1.setVisibility(View.INVISIBLE);
+                            errorText3.setVisibility(View.INVISIBLE);
+                            errorText4.setVisibility(View.INVISIBLE);
+
+                            errorText2.setVisibility(View.VISIBLE);
                             // If sign in fails, display a message to the user.
                             Log.w("Failed", "signInWithEmail:failure", task.getException());
                             Toast.makeText(Login.this, "Authentication failed.",
@@ -118,19 +136,28 @@ public class Login extends AppCompatActivity {
      * @return boolean depending on if the input is valid
      */
     public boolean validLoginCredentials(EditText field1, EditText field2) {
+
         // Lets firstly check none of the fields are empty.
-        if (field1.getText().length() > 1 && field2.getText().length() > 1) {
+        if (field1.getText().length() >= 1 && field2.getText().length() >= 1) {
+            if(!field1.getText().toString().contains("@")){
+                errorText3.setVisibility(View.VISIBLE);
+                return false;
+            }
             // Lets check if field1 is a valid email
             Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
             Matcher mat = pattern.matcher(field1.getText());
             boolean isMatch = mat.matches();
 
             if (isMatch) {
+                errorText4.setVisibility(View.INVISIBLE);
+
                 return true;
             } else {
+                errorText4.setVisibility(View.VISIBLE);
                 return false;
             }
         }
+        errorText1.setVisibility(View.VISIBLE);
 
         return false;
     }
