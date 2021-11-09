@@ -25,8 +25,8 @@ import java.util.regex.Pattern;
 
 
 /**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
+ * The Login class is responsible for logging in existing users, with an option to register
+ * if currently not a member.
  */
 public class Login extends AppCompatActivity {
 

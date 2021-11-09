@@ -72,7 +72,7 @@
         android:layout_height="51dp"
         android:background="@drawable/rounded_rectangle"
         android:contentDescription="Confirm button, click to register"
-        android:text="Confirm"
+        android:text="Register"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
