@@ -56,7 +56,6 @@
         android:hint="Last Name"
         android:inputType="textPersonName"
         android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        android:textColor="@color/black"
         android:paddingLeft="20dp"
         android:textColor="@color/black"
         android:textColorHint="@color/black"

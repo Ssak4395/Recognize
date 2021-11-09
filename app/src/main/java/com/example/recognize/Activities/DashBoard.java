@@ -37,10 +37,10 @@ public class DashBoard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash);
         mAuth = FirebaseAuth.getInstance();
-        toImageBtn = findViewById(R.id.to_img_rec);
-        toTextBtn = findViewById(R.id.to_text_rec);
-        getLocationBtn = findViewById(R.id.get_location);
-        logout = findViewById(R.id.logout_btn);
+        //toImageBtn = findViewById(R.id.to_img_rec);
+       // toTextBtn = findViewById(R.id.to_text_rec);
+        //getLocationBtn = findViewById(R.id.get_location);
+       // logout = findViewById(R.id.logout_btn);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
