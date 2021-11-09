@@ -83,12 +83,12 @@
 
         <Button
             android:id="@+id/login_button"
-            android:layout_width="101dp"
+            android:layout_width="120dp"
             android:layout_height="89dp"
             android:background="@drawable/circular_button"
             android:contentDescription="@string/login_button_click_to_login_to_the_application"
             android:elevation="30dp"
-            android:text="Go!"
+            android:text="Login"
             android:textColor="@color/black"
             android:textSize="30dp"
             andorid:layout_constraintBottom_toBottomOf="parent"

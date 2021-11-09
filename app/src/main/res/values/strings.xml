@@ -13,7 +13,9 @@
     <string name="processing_image">Processing image</string>
     <string name="check_connection">Please check your network connection and try again</string>
     <string name="log_out_button">log out button</string>
-    <string name="capture_image_for_description">Capture image for description</string>
+    <string name="capture_image_for_description">Capture image for description of objects</string>
+    <string name="get_location">Get your current location description</string>
+    <string name="capture_image_for_text">Capture image of text for reading</string>
     <string name="password_text_field">Password text field</string>
     <string name="email_address_text_field">Email address text field</string>
     <string name="login_header_text">Login header text</string>
