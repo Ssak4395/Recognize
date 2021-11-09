@@ -37,8 +37,6 @@ import com.example.recognize.network.AzureCaption;
 import com.example.recognize.network.AzureDescription;
 import com.example.recognize.network.AzureManagerService;
 import com.example.recognize.network.RetrofitInstance;
-import com.example.recognize.utils.Utils;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -129,7 +127,6 @@ public class CameraHome extends AppCompatActivity {
 
         initTTS();
         registerNetworkCallback();
-
 
 
     }
@@ -440,7 +437,7 @@ public class CameraHome extends AppCompatActivity {
     /**
      * Logs the current user out
      */
-    public void logout(){
+    public void logout() {
         mAuth.signOut();
         Intent intent = new Intent(CameraHome.this, Login.class);
         startActivity(intent);
@@ -451,7 +448,7 @@ public class CameraHome extends AppCompatActivity {
     /**
      * Checks the user intended to press the log out button
      */
-    public void logoutDialog(){
+    public void logoutDialog() {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder
                 .setTitle("Logout")
@@ -482,7 +479,7 @@ public class CameraHome extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(currentUser == null){
+        if (currentUser == null) {
             Intent intent = new Intent(CameraHome.this, Login.class);
             startActivity(intent);
         }
