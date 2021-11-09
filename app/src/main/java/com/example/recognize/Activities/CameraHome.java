@@ -118,6 +118,16 @@ public class CameraHome extends AppCompatActivity {
         logoutButton = binding.logoutButton;
         logoutButton.setOnClickListener(v -> logoutDialog());
 
+        // setup capture button
+        dashboardButton = binding.dashboardButton;
+        dashboardButton.setOnClickListener(v -> toDashBoard());
+
+        //GPS Button
+        button = findViewById(R.id.get_location);
+
+        // setup logout button
+        locationButton = binding.getLocation;
+
         // camera view
         viewFinder = binding.cameraViewFinder;
 
@@ -130,10 +140,29 @@ public class CameraHome extends AppCompatActivity {
         initTTS();
         registerNetworkCallback();
 
+        button.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onClick(View v) {
 
+                Task<Location> lastLoc = fusedLocationClient.getLastLocation();
+                lastLoc.addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        speak(getReadableAddress(location));
+                    }
+                });
+                lastLoc.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        speak("Location retrieval has failed, please try again later or check location permissions.");
+                    }
+                });
+
+            }
+        });
 
     }
-
 
     /**
      * takePhoto is responsible for capturing the image currently displayed in the camera view,
@@ -444,8 +473,6 @@ public class CameraHome extends AppCompatActivity {
         mAuth.signOut();
         Intent intent = new Intent(CameraHome.this, Login.class);
         startActivity(intent);
-
-
     }
 
     /**
@@ -469,8 +496,6 @@ public class CameraHome extends AppCompatActivity {
                     }
                 });
         alertBuilder.create().show();
-
-
     }
 
 
@@ -489,4 +514,42 @@ public class CameraHome extends AppCompatActivity {
 
 
     }
+
+
+    private void initLocation()
+    {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+    }
+
+    private String getReadableAddress(Location location)
+    {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+        String address = "";
+        String city = "";
+        String state = "";
+        String postalCode = "";
+        String streetNumber  = "";
+
+        try {
+            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+             address = addresses.get(0).getThoroughfare(); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+             city = addresses.get(0).getLocality();
+             state = addresses.get(0).getAdminArea();
+             postalCode = addresses.get(0).getPostalCode();
+             streetNumber = addresses.get(0).getFeatureName();
+            System.out.println(addresses.get(0));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+      return "You are currently located in " + streetNumber+ " " + address + " in the city of " + city + " located in the state of " + state + " The post code is " + postalCode;
+    }
+
+
+
 }
