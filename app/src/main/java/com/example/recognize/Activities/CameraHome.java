@@ -1,19 +1,29 @@
 package com.example.recognize.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioManager;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -37,8 +47,11 @@ import com.example.recognize.network.AzureCaption;
 import com.example.recognize.network.AzureDescription;
 import com.example.recognize.network.AzureManagerService;
 import com.example.recognize.network.RetrofitInstance;
-import com.example.recognize.utils.Utils;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,6 +63,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -76,15 +90,21 @@ public class CameraHome extends AppCompatActivity {
     private final String FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
 
 
+    private LocationManager locationManager;
+    private LocationListener listener;
     private ImageCapture imageCapture;
     private File outputDirectory;
     private ExecutorService cameraExecutor;
     private PreviewView viewFinder;
+    private ImageView button;
+    private Location myLocation;
 
     private ImageView cameraCaptureButton;
     private ImageView logoutButton;
+    private ImageView locationButton;
+    private ImageView dashboardButton;
     private ActivityCameraHomeBinding binding;
-
+    private FusedLocationProviderClient fusedLocationClient;
     private TextToSpeech mTTS;
 
     private boolean isNetworkConnected;
@@ -138,13 +158,13 @@ public class CameraHome extends AppCompatActivity {
         cameraExecutor = Executors.newSingleThreadExecutor();
 
         initTTS();
+        initLocation();
         registerNetworkCallback();
 
         button.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
-
                 Task<Location> lastLoc = fusedLocationClient.getLastLocation();
                 lastLoc.addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
@@ -159,10 +179,6 @@ public class CameraHome extends AppCompatActivity {
                     }
                 });
 
-            }
-        });
-
-    }
 
     /**
      * takePhoto is responsible for capturing the image currently displayed in the camera view,
@@ -285,6 +301,14 @@ public class CameraHome extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Go to dashboard
+     */
+    private void toDashBoard(){
+        Intent intent = new Intent(CameraHome.this, DashBoard.class);
+        startActivity(intent);
     }
 
     /**
@@ -469,7 +493,7 @@ public class CameraHome extends AppCompatActivity {
     /**
      * Logs the current user out
      */
-    public void logout(){
+    public void logout() {
         mAuth.signOut();
         Intent intent = new Intent(CameraHome.this, Login.class);
         startActivity(intent);
@@ -478,7 +502,7 @@ public class CameraHome extends AppCompatActivity {
     /**
      * Checks the user intended to press the log out button
      */
-    public void logoutDialog(){
+    public void logoutDialog() {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder
                 .setTitle("Logout")
@@ -507,7 +531,7 @@ public class CameraHome extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(currentUser == null){
+        if (currentUser == null) {
             Intent intent = new Intent(CameraHome.this, Login.class);
             startActivity(intent);
         }
@@ -549,7 +573,5 @@ public class CameraHome extends AppCompatActivity {
 
       return "You are currently located in " + streetNumber+ " " + address + " in the city of " + city + " located in the state of " + state + " The post code is " + postalCode;
     }
-
-
 
 }
