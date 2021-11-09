@@ -94,5 +94,55 @@
             andorid:layout_constraintTop_toTopOf="parent"
             andorid:layout_constraintVertical_bias="0.931" />
 
+        <TextView
+            android:id="@+id/login_Error_text_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All fields must be filled in!"
+            android:textColor="#FB0000"
+            android:visibility="invisible"
+            andorid:layout_constraintBottom_toTopOf="@+id/login_button"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toBottomOf="@+id/register_button_login" />
+
+        <TextView
+            android:id="@+id/login_Error_text_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please check email address input"
+            android:textColor="#FB0000"
+            android:visibility="invisible"
+            andorid:layout_constraintBottom_toTopOf="@+id/login_button"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toBottomOf="@+id/register_button_login" />
+
+        <TextView
+            android:id="@+id/login_Error_text_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email address must include an @ sign!"
+            android:textColor="#FB0000"
+            android:visibility="invisible"
+            andorid:layout_constraintBottom_toTopOf="@+id/login_button"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintHorizontal_bias="0.497"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toBottomOf="@+id/register_button_login" />
+
+        <TextView
+            android:id="@+id/login_Error_text_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No user is found with given details!"
+            android:textColor="#FB0000"
+            android:visibility="invisible"
+            andorid:layout_constraintBottom_toTopOf="@+id/login_button"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintHorizontal_bias="0.497"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toBottomOf="@+id/register_button_login" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

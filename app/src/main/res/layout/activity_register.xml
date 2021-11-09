@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:andorid="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/gradient_background_register"
     android:theme="@style/ThemeOverlay.Recognize.FullscreenContainer"
-    tools:context=".Activities.Register"
-    >
+    tools:context=".Activities.Register">
 
     <EditText
-        android:id="@+id/emailAddress"
+        android:id="@+id/email_address_register"
         android:layout_width="312dp"
         android:layout_height="48dp"
         android:background="@drawable/rounded_rectangle"
@@ -36,6 +36,8 @@
         android:textColor="@color/black"
         android:hint="First Name"
         android:inputType="textPersonName"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
         android:paddingLeft="20dp"
         android:textColorHint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -46,13 +48,15 @@
         app:layout_constraintVertical_bias="0.367" />
 
     <EditText
-        android:id="@+id/last_name"
+        android:id="@+id/last_name_register"
         android:layout_width="312dp"
         android:layout_height="48dp"
         android:background="@drawable/rounded_rectangle"
         android:ems="10"
         android:hint="Last Name"
         android:inputType="textPersonName"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
         android:textColor="@color/black"
         android:paddingLeft="20dp"
         android:textColorHint="@color/black"
@@ -78,7 +82,7 @@
         app:layout_constraintVertical_bias="0.944" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/password_register"
         android:layout_width="304dp"
         android:layout_height="48dp"
         android:background="@drawable/rounded_rectangle"
@@ -94,6 +98,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.582" />
+
+    <TextView
+        android:id="@+id/register_error_text_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="All fields must be filled!"
+        android:textColor="#FF0000"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/register_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_register" />
+
+    <TextView
+        android:id="@+id/register_error_text_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email address must include an @ sign"
+        android:textColor="#FF0000"
+        android:visibility="invisible"
+        andorid:layout_constraintBottom_toTopOf="@+id/register_button"
+        andorid:layout_constraintEnd_toEndOf="parent"
+        andorid:layout_constraintStart_toStartOf="parent"
+        andorid:layout_constraintTop_toBottomOf="@+id/password_register" />
+
+    <TextView
+        android:id="@+id/register_error_text_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email address already exists!"
+        android:textColor="#FF0000"
+        android:visibility="invisible"
+        andorid:layout_constraintBottom_toTopOf="@+id/register_button"
+        andorid:layout_constraintEnd_toEndOf="parent"
+        andorid:layout_constraintStart_toStartOf="parent"
+        andorid:layout_constraintTop_toBottomOf="@+id/password_register" />
+
+    <TextView
+        android:id="@+id/register_error_text_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please check the email address input"
+        android:textColor="#FF0000"
+        android:visibility="invisible"
+        andorid:layout_constraintBottom_toTopOf="@+id/register_button"
+        andorid:layout_constraintEnd_toEndOf="parent"
+        andorid:layout_constraintStart_toStartOf="parent"
+        andorid:layout_constraintTop_toBottomOf="@+id/password_register" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class Register extends AppCompatActivity {
 
@@ -26,26 +30,76 @@ public class Register extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText email;  //Reference to user inputted text in UI
     private EditText password;
+    private EditText firstName;
+    private EditText lastName;
     private Button registerButton;
+    private TextView errorText1;
+    private TextView errorText2;
+    private TextView errorText3;
+    private TextView errorText4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
-        email = findViewById(R.id.emailAddress);
-        password = findViewById(R.id.password);
+        email = findViewById(R.id.email_address_register);
+        password = findViewById(R.id.password_register);
+        firstName = findViewById(R.id.first_name_register);
+        lastName = findViewById(R.id.last_name_register);
         registerButton = findViewById(R.id.register_button);
+        errorText1 = findViewById(R.id.register_error_text_1);//Empty input
+        errorText2 = findViewById(R.id.register_error_text_2);//No @ sign in email
+        errorText3 = findViewById(R.id.register_error_text_3);//User exists
+        errorText4 = findViewById(R.id.register_error_text_4);//User exists
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createAccount(email.getText().toString(), password.getText().toString());
+                errorText1.setVisibility(View.INVISIBLE);
+                errorText2.setVisibility(View.INVISIBLE);
+                errorText3.setVisibility(View.INVISIBLE);
+                errorText4.setVisibility(View.INVISIBLE);
+                boolean validateRegister = validRegisterForm(email, password, firstName, lastName);
+                if (validateRegister) {
+                    errorText1.setVisibility(View.INVISIBLE);
+                    errorText2.setVisibility(View.INVISIBLE);
+                    errorText3.setVisibility(View.INVISIBLE);
+                    errorText4.setVisibility(View.INVISIBLE);
+                    createAccount(email.getText().toString(), password.getText().toString());
+                }
             }
         });
 
         setupOutsideClickListener();
 
+    }
+
+    public boolean validRegisterForm(EditText email, EditText password,EditText firstName,EditText lastName) {
+
+        // Lets firstly check none of the fields are empty.
+        if (email.getText().length() >= 1 && password.getText().length() >= 1&&firstName.getText().length() >= 1&&lastName.getText().length() >= 1) {
+            if(!email.getText().toString().contains("@")){
+                errorText2.setVisibility(View.VISIBLE);
+                return false;
+            }
+            // Lets check if field1 is a valid email
+            Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+            Matcher mat = pattern.matcher(email.getText());
+            boolean isMatch = mat.matches();
+
+            if (isMatch) {
+                errorText4.setVisibility(View.INVISIBLE);
+
+                return true;
+            } else {
+                errorText4.setVisibility(View.VISIBLE);
+                return false;
+            }
+        }
+        errorText1.setVisibility(View.VISIBLE);
+
+        return false;
     }
 
     private void createAccount(String email, String password) {
