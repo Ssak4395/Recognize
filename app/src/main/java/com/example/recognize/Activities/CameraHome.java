@@ -81,6 +81,8 @@ public class CameraHome extends AppCompatActivity {
 
     private ImageView cameraCaptureButton;
     private ImageView logoutButton;
+    private ImageView locationButton;
+    private ImageView dashboardButton;
     private ActivityCameraHomeBinding binding;
 
     private TextToSpeech mTTS;
@@ -116,6 +118,14 @@ public class CameraHome extends AppCompatActivity {
         logoutButton = binding.logoutButton;
         logoutButton.setOnClickListener(v -> logoutDialog());
 
+        // setup capture button
+        dashboardButton = binding.dashboardButton;
+        dashboardButton.setOnClickListener(v -> toDashBoard());
+
+        // setup logout button
+        locationButton = binding.getLocation;
+        locationButton.setOnClickListener(v -> getLocation());
+
         // camera view
         viewFinder = binding.cameraViewFinder;
 
@@ -128,6 +138,14 @@ public class CameraHome extends AppCompatActivity {
         initTTS();
         registerNetworkCallback();
 
+
+    }
+
+
+    /**
+     * Dummy place holder for get location
+     */
+    private void getLocation(){
 
     }
 
@@ -253,6 +271,14 @@ public class CameraHome extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Go to dashboard
+     */
+    private void toDashBoard(){
+        Intent intent = new Intent(CameraHome.this, DashBoard.class);
+        startActivity(intent);
     }
 
     /**

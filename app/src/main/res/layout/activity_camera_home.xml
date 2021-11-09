@@ -23,6 +23,38 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
+        android:id="@+id/dashboard_button"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_margin="30dp"
+        android:layout_marginBottom="28dp"
+        android:contentDescription="@string/capture_image_for_description"
+        android:elevation="2dp"
+        android:importantForAccessibility="yes"
+        android:src="@drawable/ic_gallery_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintStart_toEndOf="@+id/camera_capture_button" />
+
+    <ImageView
+        android:id="@+id/get_location"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_margin="30dp"
+        android:layout_marginBottom="28dp"
+        android:contentDescription="@string/capture_image_for_description"
+        android:elevation="2dp"
+        android:importantForAccessibility="yes"
+        android:src="@drawable/ic_location_btn"
+        android:text="Go!"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/camera_capture_button"
+        app:layout_constraintHorizontal_bias="0.205"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
         android:id="@+id/logout_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -35,10 +67,14 @@
         app:tint="@color/white" />
 
 
-    <androidx.camera.view.PreviewView
+        <androidx.camera.view.PreviewView
         android:id="@+id/camera_view_finder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
+
+    </androidx.camera.view.PreviewView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
