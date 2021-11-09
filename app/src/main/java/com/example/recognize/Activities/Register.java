@@ -13,25 +13,38 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recognize.R;
+import com.example.recognize.utils.Constants;
 import com.example.recognize.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import Models.User;
 
+/**
+ * Register class is responsible for registering new users.
+ */
 public class Register extends AppCompatActivity {
 
+    private static final String TAG = "RegisterActivity";
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+
     private EditText email;  //Reference to user inputted text in UI
     private EditText password;
     private EditText firstName;
     private EditText lastName;
+
     private Button registerButton;
     private TextView errorText1;
     private TextView errorText2;
@@ -42,7 +55,12 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        // setup Firebase instances
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        // setup views
         email = findViewById(R.id.email_address_register);
         password = findViewById(R.id.password_register);
         firstName = findViewById(R.id.first_name_register);
@@ -52,6 +70,17 @@ public class Register extends AppCompatActivity {
         errorText2 = findViewById(R.id.register_error_text_2);//No @ sign in email
         errorText3 = findViewById(R.id.register_error_text_3);//User exists
         errorText4 = findViewById(R.id.register_error_text_4);//User exists
+
+        setupButtonListeners();
+        setupOutsideClickListener();
+
+    }
+
+
+    /**
+     * Helper function to setup button listeners for this activity
+     */
+    public void setupButtonListeners() {
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,20 +95,29 @@ public class Register extends AppCompatActivity {
                     errorText2.setVisibility(View.INVISIBLE);
                     errorText3.setVisibility(View.INVISIBLE);
                     errorText4.setVisibility(View.INVISIBLE);
-                    createAccount(email.getText().toString(), password.getText().toString());
+                    createAccount(email.getText().toString(), password.getText().toString(),
+                            firstName.getText().toString(), lastName.getText().toString());
                 }
             }
         });
-
-        setupOutsideClickListener();
-
     }
 
-    public boolean validRegisterForm(EditText email, EditText password,EditText firstName,EditText lastName) {
+
+    /**
+     * Determines the validity of the registration form
+     *
+     * @param email     users email address
+     * @param password  users password
+     * @param firstName users first name
+     * @param lastName  users last name
+     * @return boolean depending on if the form has valid fields
+     */
+    public boolean validRegisterForm(EditText email, EditText password, EditText firstName,
+                                     EditText lastName) {
 
         // Lets firstly check none of the fields are empty.
-        if (email.getText().length() >= 1 && password.getText().length() >= 1&&firstName.getText().length() >= 1&&lastName.getText().length() >= 1) {
-            if(!email.getText().toString().contains("@")){
+        if (email.getText().length() >= 1 && password.getText().length() >= 1 && firstName.getText().length() >= 1 && lastName.getText().length() >= 1) {
+            if (!email.getText().toString().contains("@")) {
                 errorText2.setVisibility(View.VISIBLE);
                 return false;
             }
@@ -102,12 +140,18 @@ public class Register extends AppCompatActivity {
         return false;
     }
 
-    private void createAccount(String email, String password) {
+    private void createAccount(String email, String password, String firstName, String lastName) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            User userToAdd = new User();
+                            userToAdd.setEmail(email);
+                            userToAdd.setFirstName(firstName);
+                            userToAdd.setLastName(lastName);
+                            addUserToFirestore(userToAdd);
+
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(Register.this, "REGISTRATION " +
                                     "SUCCESSFUL", Toast.LENGTH_LONG).show();
@@ -124,6 +168,32 @@ public class Register extends AppCompatActivity {
                 });
 
     }
+
+    /**
+     * Adds a user to Firebase Firestore 'users' collection.
+     *
+     * @param user the new User {@link User} to add
+     */
+    private void addUserToFirestore(User user) {
+        db.collection(Constants.USERS_COLLECTION)
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG,
+                                "successfully added user to Firestore with id: " + documentReference.getId());
+                        // set id of user within model for complex queries
+                        user.setId(documentReference.getId());
+                        db.collection(Constants.USERS_COLLECTION).document(documentReference.getId()).set(user);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "unable to add user to Firestore");
+            }
+        });
+    }
+
 
     /**
      * Helper function to hide soft keyboard when clicking outside text field {@link Utils}
