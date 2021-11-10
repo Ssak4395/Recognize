@@ -1,4 +1,4 @@
-package com.example.recognize.network;
+package com.example.recognize.models.description;
 
 import com.google.gson.annotations.SerializedName;
 

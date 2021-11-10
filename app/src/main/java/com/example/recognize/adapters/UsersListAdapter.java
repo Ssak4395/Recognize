@@ -14,7 +14,7 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
-import Models.User;
+import com.example.recognize.models.User;
 
 public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.UsersListViewHolder> {
     private static final String TAG = "UsersListAdapter";

@@ -1,4 +1,4 @@
-package com.example.recognize.Activities;
+package com.example.recognize.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,8 +16,6 @@ import com.example.recognize.R;
 import com.example.recognize.utils.Constants;
 import com.example.recognize.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import Models.User;
+import com.example.recognize.models.User;
 
 /**
  * Register class is responsible for registering new users.

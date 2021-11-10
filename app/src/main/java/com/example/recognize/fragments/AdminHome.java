@@ -18,13 +18,10 @@ import android.view.ViewGroup;
 
 import com.example.recognize.R;
 import com.example.recognize.adapters.UsersListAdapter;
-import com.example.recognize.utils.Constants;
-import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import Models.User;
+import com.example.recognize.models.User;
 
 /**
  * A simple {@link Fragment} subclass.
