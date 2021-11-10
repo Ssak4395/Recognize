@@ -16,8 +16,6 @@ import com.example.recognize.R;
 import com.example.recognize.utils.Constants;
 import com.example.recognize.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -182,7 +180,9 @@ public class Register extends AppCompatActivity {
         DocumentReference documentReference =
                 db.collection(Constants.USERS_COLLECTION).document(user.getUid());
 
-        documentReference.set(user).addOnSuccessListener(unused -> Log.d(TAG, "onSuccess: user success")).addOnFailureListener(e -> Log.d(TAG, "onFailure: user not created in firestore"));
+        documentReference.set(user).addOnSuccessListener(unused -> Log.d(TAG, "onSuccess: user " +
+                "success")).addOnFailureListener(e -> Log.d(TAG, "onFailure: user not created in " +
+                "firestore"));
 
 
     }

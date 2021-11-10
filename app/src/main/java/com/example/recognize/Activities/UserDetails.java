@@ -3,31 +3,23 @@ package com.example.recognize.Activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
-
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.ImageView;
-
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recognize.R;
 import com.example.recognize.utils.Constants;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -36,6 +28,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.Locale;
+
+import Models.User;
 
 
 public class UserDetails extends AppCompatActivity {
@@ -50,53 +44,61 @@ public class UserDetails extends AppCompatActivity {
     private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     private String fullName;
 
-    FirebaseDatabase firebaseDatabase;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
         mAuth = FirebaseAuth.getInstance();
+
         userFullName = findViewById(R.id.user_name_text);
         userEmail = findViewById(R.id.user_email_text);
-        userEmail.setText(currentUser.getEmail());
-
         speaker = findViewById(R.id.user_details_speaker);
         logout = findViewById(R.id.logout_button);
+
+        setupClickListeners();
+        initTTS();
+        getUserData();
+    }
+
+
+    /**
+     * Helper function to setup click listeners for this activity.
+     */
+    public void setupClickListeners() {
         logout.setOnClickListener(v -> logoutDialog());
-        firebaseDatabase = FirebaseDatabase.getInstance();
 
         speaker.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
-               speak("Your email address is "+ currentUser.getEmail()+" Your name is "+fullName);
+                speak("Your email address is " + currentUser.getEmail() + " Your name is " + fullName);
             }
         });
-
-        initTTS();
-        getUserData();
     }
 
     /**
-     * Get user name from firestore and set it to the Text Object
+     * Get user name from Firestore and set it to the Text Object
      */
-    private void getUserData(){
-        userCollectionRef = db.collection("users");
+    private void getUserData() {
+        userCollectionRef = db.collection(Constants.USERS_COLLECTION);
         DocumentReference userDoc = userCollectionRef.document(currentUser.getUid());
         userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.d("PLEASE","Listen failed: " + error);
-                    return;
-                }
+            public void onEvent(@Nullable DocumentSnapshot value,
+                                @Nullable FirebaseFirestoreException error) {
+                if (value != null) {
+                    // convert user to our User model
+                    User user = value.toObject(User.class);
+                    if (user != null) {
 
-                if (snapshot != null && snapshot.exists()) {
-                    fullName = (String)snapshot.getData().get("firstName")+" "+(String)snapshot.getData().get("lastName");
-                    userFullName.setText(fullName);
-                } else {
-                    Log.d("PLEASE","Current data: null");
+                        // set name
+                        fullName = user.getFirstName() + " " + user.getLastName();
+                        userFullName.setText(fullName);
+
+                        // set email
+                        userEmail.setText(user.getEmail());
+                    }
+
                 }
             }
         });
@@ -135,15 +137,14 @@ public class UserDetails extends AppCompatActivity {
             } else {
                 Log.e("TTS", "Initialization failed");
             }
-        },"com.google.android.tts");
+        }, "com.google.android.tts");
     }
-
 
 
     /**
      * Logs the current user out
      */
-    public void logout(){
+    public void logout() {
         mAuth.signOut();
         Intent intent = new Intent(UserDetails.this, Login.class);
         startActivity(intent);
@@ -171,7 +172,6 @@ public class UserDetails extends AppCompatActivity {
                 });
         alertBuilder.create().show();
     }
-
 
 
 }
