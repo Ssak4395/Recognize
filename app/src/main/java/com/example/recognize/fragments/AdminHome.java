@@ -20,7 +20,7 @@ import com.example.recognize.adapters.UsersListAdapter;
 
 import java.util.ArrayList;
 
-import Models.User;
+import com.example.recognize.models.User;
 
 /**
  * A simple {@link Fragment} subclass.

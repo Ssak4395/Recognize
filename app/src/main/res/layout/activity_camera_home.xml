@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/fullscreenBackgroundColor"
     android:theme="@style/ThemeOverlay.Recognize.FullscreenContainer"
-    tools:context=".Activities.CameraHome">
+    tools:context=".activities.CameraHome">
 
 
     <ImageView
@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/dashboard_button"
+        android:id="@+id/capture_image_text_button"
         android:layout_width="85dp"
         android:layout_height="85dp"
         android:layout_margin="30dp"
@@ -31,7 +31,7 @@
         android:contentDescription="@string/capture_image_for_text"
         android:elevation="2dp"
         android:importantForAccessibility="yes"
-        android:src="@drawable/ic_user_details_btn"
+        android:src="@drawable/ic_baseline_text_snippet_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"
@@ -67,6 +67,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/white" />
+
+    <ImageView
+        android:id="@+id/dashboard_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="28dp"
+        android:contentDescription="click to change voices or listen to profile details"
+        android:elevation="2dp"
+        android:importantForAccessibility="yes"
+        android:src="@drawable/ic_user_details_btn"
+        app:layout_constraintEnd_toStartOf="@id/logout_button"
+        app:layout_constraintTop_toTopOf="@id/logout_button"
+        app:tint="@color/white" />
+
+
 
 
     <androidx.camera.view.PreviewView

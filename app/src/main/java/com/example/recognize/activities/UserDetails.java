@@ -1,4 +1,4 @@
-package com.example.recognize.Activities;
+package com.example.recognize.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,6 +17,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recognize.R;
+import com.example.recognize.activities.Login;
+import com.example.recognize.models.User;
 import com.example.recognize.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,8 +30,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.Locale;
-
-import Models.User;
 
 
 public class UserDetails extends AppCompatActivity {

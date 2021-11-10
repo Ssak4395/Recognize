@@ -1,4 +1,4 @@
-package com.example.recognize.Activities;
+package com.example.recognize.activities;
 
 
 import android.Manifest;
@@ -63,6 +63,7 @@ public class Splash extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         verifyPermissions();
     }
 }

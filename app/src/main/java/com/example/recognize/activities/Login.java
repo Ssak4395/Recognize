@@ -1,4 +1,4 @@
-package com.example.recognize.Activities;
+package com.example.recognize.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import Models.User;
+import com.example.recognize.models.User;
 
 
 /**

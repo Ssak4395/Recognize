@@ -1,4 +1,4 @@
-package com.example.recognize.Activities;
+package com.example.recognize.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;

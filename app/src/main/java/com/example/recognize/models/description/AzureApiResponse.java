@@ -1,9 +1,8 @@
-package com.example.recognize.network;
+package com.example.recognize.models.description;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Top level part of Azure JSON response

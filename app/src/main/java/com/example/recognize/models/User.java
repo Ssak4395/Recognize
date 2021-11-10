@@ -1,8 +1,4 @@
-package Models;
-
-import androidx.annotation.NonNull;
-
-import java.util.List;
+package com.example.recognize.models;
 
 public class User {
 

@@ -14,7 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-import Models.User;
+import com.example.recognize.models.User;
 
 public class AdminViewModel extends ViewModel {
     private static final String TAG = "AdminViewModel";

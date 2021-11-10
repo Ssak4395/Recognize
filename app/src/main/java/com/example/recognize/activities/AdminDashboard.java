@@ -1,4 +1,4 @@
-package com.example.recognize.Activities;
+package com.example.recognize.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
