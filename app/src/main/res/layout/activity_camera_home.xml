@@ -28,14 +28,15 @@
         android:layout_height="85dp"
         android:layout_margin="30dp"
         android:layout_marginBottom="28dp"
-        android:contentDescription="@string/capture_image_for_description"
+        android:contentDescription="@string/capture_image_for_text"
         android:elevation="2dp"
         android:importantForAccessibility="yes"
         android:src="@drawable/ic_user_details_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toEndOf="@+id/camera_capture_button" />
+        app:layout_constraintStart_toEndOf="@+id/camera_capture_button"
+        app:tint="#3E50B4" />
 
     <ImageView
         android:id="@+id/get_location"
@@ -43,16 +44,17 @@
         android:layout_height="85dp"
         android:layout_margin="30dp"
         android:layout_marginBottom="28dp"
-        android:contentDescription="@string/capture_image_for_description"
+        android:contentDescription="@string/get_location"
         android:elevation="2dp"
         android:importantForAccessibility="yes"
         android:src="@drawable/ic_location_btn"
-        android:text="Go!"
         android:textColor="@color/black"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/camera_capture_button"
         app:layout_constraintHorizontal_bias="0.205"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:tint="#3E50B4" />
 
     <ImageView
         android:id="@+id/logout_button"
@@ -67,7 +69,7 @@
         app:tint="@color/white" />
 
 
-        <androidx.camera.view.PreviewView
+    <androidx.camera.view.PreviewView
         android:id="@+id/camera_view_finder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -78,43 +80,3 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    xmlns:tools="http://schemas.android.com/tools"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:layout_height="match_parent"-->
-    <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--    android:background="?attr/fullscreenBackgroundColor"-->
-    <!--    android:theme="@style/ThemeOverlay.Recognize.FullscreenContainer"-->
-    <!--    tools:context=".Activities.CameraHome">-->
-
-    <!--    <FrameLayout-->
-    <!--        android:id="@+id/cameraView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="616dp" />-->
-
-    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent">-->
-
-    <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="match_parent">-->
-
-    <!--            <ImageView-->
-    <!--                android:id="@+id/cameraBTN"-->
-    <!--                android:layout_width="84dp"-->
-    <!--                android:layout_height="75dp"-->
-    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--                app:layout_constraintEnd_toEndOf="parent"-->
-    <!--                app:layout_constraintHorizontal_bias="0.498"-->
-    <!--                app:layout_constraintStart_toStartOf="parent"-->
-    <!--                app:layout_constraintTop_toTopOf="parent"-->
-    <!--                app:layout_constraintVertical_bias="0.961"-->
-    <!--                app:srcCompat="@drawable/capture" />-->
-
-    <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
-    <!--</FrameLayout>-->
