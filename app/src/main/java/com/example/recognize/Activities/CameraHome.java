@@ -47,6 +47,7 @@ import com.example.recognize.network.AzureCaption;
 import com.example.recognize.network.AzureDescription;
 import com.example.recognize.network.AzureManagerService;
 import com.example.recognize.network.RetrofitInstance;
+import com.example.recognize.utils.Utils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -162,24 +163,25 @@ public class CameraHome extends AppCompatActivity {
         registerNetworkCallback();
 
         button.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onClick(View v) {
-                Task<Location> lastLoc = fusedLocationClient.getLastLocation();
-                lastLoc.addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        speak(getReadableAddress(location));
-                    }
-                });
-                lastLoc.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        speak("Location retrieval has failed, please try again later or check location permissions.");
-                    }
-                });
-
-
+          @SuppressLint("MissingPermission")
+          @Override
+          public void onClick(View v) {
+              Task<Location> lastLoc = fusedLocationClient.getLastLocation();
+              lastLoc.addOnSuccessListener(new OnSuccessListener<Location>() {
+                  @Override
+                  public void onSuccess(Location location) {
+                      speak(getReadableAddress(location));
+                  }
+              });
+              lastLoc.addOnFailureListener(new OnFailureListener() {
+                  @Override
+                  public void onFailure(@NonNull Exception e) {
+                      speak("Location retrieval has failed, please try again later or check location permissions.");
+                  }
+              });
+          }
+      });
+    }
     /**
      * takePhoto is responsible for capturing the image currently displayed in the camera view,
      * saving
@@ -428,10 +430,11 @@ public class CameraHome extends AppCompatActivity {
      *
      * @param textToSpeech
      */
-    private void speak(String textToSpeech) {
+    public void speak(String textToSpeech) {
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         int amStreamMusicMaxVol = am.getStreamMaxVolume(am.STREAM_MUSIC);
         am.setStreamVolume(am.STREAM_MUSIC, amStreamMusicMaxVol, 0);
+        mTTS.setPitch(Utils.pitch);
         mTTS.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null);
     }
 
@@ -443,7 +446,7 @@ public class CameraHome extends AppCompatActivity {
             if (status == TextToSpeech.SUCCESS) {
                 int result = mTTS.setLanguage(Locale.ENGLISH);
                 Log.d("TTS:", "the result was" + result);
-
+                mTTS.setPitch(0);
 
                 if (result == TextToSpeech.LANG_MISSING_DATA
                         || result == TextToSpeech.LANG_NOT_SUPPORTED) {
@@ -454,7 +457,7 @@ public class CameraHome extends AppCompatActivity {
             } else {
                 Log.e("TTS", "Initialization failed");
             }
-        });
+        },"com.google.android.tts");
 
     }
 

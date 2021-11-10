@@ -43,19 +43,6 @@
             andorid:layout_constraintVertical_bias="0.046" />
 
         <ImageView
-            android:id="@+id/user_gallery_btn"
-            android:layout_width="145dp"
-            android:layout_height="149dp"
-            android:background="@drawable/rounded_corners_button"
-            android:padding="20dp"
-            andorid:layout_constraintBottom_toBottomOf="parent"
-            andorid:layout_constraintEnd_toEndOf="parent"
-            andorid:layout_constraintStart_toStartOf="parent"
-            andorid:layout_constraintTop_toBottomOf="@+id/user_details_btn"
-            andorid:layout_constraintVertical_bias="0.385"
-            andorid:srcCompat="@drawable/ic_user_gallery_btn" />
-
-        <ImageView
             android:id="@+id/user_details_btn"
             android:layout_width="145dp"
             android:layout_height="149dp"
@@ -67,6 +54,19 @@
             andorid:layout_constraintTop_toTopOf="parent"
             andorid:layout_constraintVertical_bias="0.331"
             andorid:srcCompat="@drawable/ic_user_details_btn" />
+
+        <ImageView
+            android:id="@+id/voice_change_btn"
+            android:layout_width="145dp"
+            android:layout_height="149dp"
+            android:background="@drawable/rounded_corners_button"
+            android:padding="20dp"
+            andorid:layout_constraintBottom_toBottomOf="parent"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toBottomOf="@+id/user_details_btn"
+            andorid:layout_constraintVertical_bias="0.366"
+            andorid:srcCompat="@drawable/ic_system_voice_change_btn" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

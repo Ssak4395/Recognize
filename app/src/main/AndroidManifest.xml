@@ -46,6 +46,11 @@
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
+            android:name=".Activities.UserDetails"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_user_details"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
             android:name=".Activities.DashBoard"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_dashboard"

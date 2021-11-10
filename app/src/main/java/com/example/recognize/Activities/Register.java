@@ -118,7 +118,6 @@ public class Register extends AppCompatActivity {
                             Log.d("EXCEPTION", task.getException().toString());
                             Toast.makeText(Register.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-
                         }
                     }
                 });
