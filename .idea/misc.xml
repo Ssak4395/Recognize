@@ -10,6 +10,7 @@
         <entry key="app/src/main/res/drawable/gradient_background_register.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/drawable/rounded_corners_button.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/drawable/rounded_rectangle.xml" value="0.2604166666666667" />
+        <entry key="app/src/main/res/layout/activity_admin.xml" value="0.2234375" />
         <entry key="app/src/main/res/layout/activity_camera_home.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_dash.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.24427083333333333" />
@@ -18,6 +19,10 @@
         <entry key="app/src/main/res/layout/activity_preview.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.30388219182700393" />
         <entry key="app/src/main/res/layout/activity_user_details.xml" value="0.24427083333333333" />
+        <entry key="app/src/main/res/layout/fragment_admin_edit_user.xml" value="0.2234375" />
+        <entry key="app/src/main/res/layout/fragment_admin_home.xml" value="0.2234375" />
+        <entry key="app/src/main/res/layout/users_list.xml" value="0.4707313241877534" />
+        <entry key="app/src/main/res/menu/admin_menu.xml" value="0.2234375" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.440625" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.440625" />
       </map>
