@@ -35,13 +35,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -58,7 +51,6 @@ public class UserDetails extends AppCompatActivity {
     private ImageView logout;
     private ImageView speaker;
     private TextToSpeech mTTS;
-    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
@@ -74,27 +66,6 @@ public class UserDetails extends AppCompatActivity {
         logout = findViewById(R.id.logout_button);
         logout.setOnClickListener(v -> logoutDialog());
         initTTS();
-
-
-
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference uidRef = rootRef.child("users").child(currentUser.getUid());
-        Log.d("TAG", uidRef.toString());
-
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                User user = dataSnapshot.getValue(User.class);
-                Log.d("TAG", user.getFirstName());
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d("TAG", databaseError.getMessage()); //Don't ignore errors!
-            }
-        };
-        uidRef.addListenerForSingleValueEvent(valueEventListener);
-
 
         speaker.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
