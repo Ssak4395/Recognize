@@ -15,13 +15,12 @@ import android.widget.EditText;
  */
 public class Utils {
 
-    public static float pitch = 1f;
 
     public static void changePitch(){
-        if(pitch==.5f){
-            pitch = 1f;
+        if(Constants.PITCH==.5f){
+            Constants.PITCH = 1f;
         }else{
-            pitch =.5f;
+            Constants.PITCH =.5f;
         }
     }
 
