@@ -67,27 +67,31 @@ public class AdminViewModel extends ViewModel {
         return editingUser;
     }
 
-    public void loadUserFromFirebase(String userId){
-        db.collection(Constants.USERS_COLLECTION).document(userId).addSnapshotListener((value, error) -> {
-            if(value != null){
-                User u = value.toObject(User.class);
-                if(u != null){
-                    editingUser.setValue(u);
-                }
-            }
-        });
+    public void loadUserFromFirebase(String userId) {
+        db.collection(Constants.USERS_COLLECTION)
+                .document(userId)
+                .addSnapshotListener((value, error) -> {
+                    if (value != null) {
+                        User u = value.toObject(User.class);
+                        if (u != null) {
+                            editingUser.setValue(u);
+                        }
+                    }
+                });
 
     }
 
 
-    public void saveChanges(String userId, String firstName, String lastName, boolean isAdmin){
+    public void saveChanges(String userId, String firstName, String lastName, boolean isAdmin) {
         User updatedUser = editingUser.getValue();
-        if(updatedUser != null){
+        if (updatedUser != null) {
             updatedUser.setAdminUser(isAdmin);
             updatedUser.setFirstName(firstName);
             updatedUser.setLastName(lastName);
 
-            db.collection(Constants.USERS_COLLECTION).document(userId).set(updatedUser)
+            db.collection(Constants.USERS_COLLECTION)
+                    .document(userId)
+                    .set(updatedUser)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {

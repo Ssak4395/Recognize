@@ -10,25 +10,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recognize.R;
 import com.example.recognize.utils.Constants;
 import com.example.recognize.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,7 +65,6 @@ public class Login extends AppCompatActivity {
     }
 
 
-
     /**
      * Helper function to setup button listeners for this activity
      */
@@ -94,7 +86,7 @@ public class Login extends AppCompatActivity {
                 boolean validlogin = validLoginCredentials(email, password);
                 if (validlogin) {
                     loginUser(email.getText().toString(), password.getText().toString());
-                }else{
+                } else {
 //                    errorText2.setVisibility(View.VISIBLE);
                 }
             }
@@ -120,20 +112,21 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(Login.this, "Successful login!", Toast.LENGTH_LONG).show();
 
                             String userId = mAuth.getCurrentUser().getUid();
-                            DocumentReference userRef = db.collection(Constants.USERS_COLLECTION).document(userId);
+                            DocumentReference userRef =
+                                    db.collection(Constants.USERS_COLLECTION).document(userId);
                             userRef.addSnapshotListener((value, error) -> {
-                                if(value != null){
+                                if (value != null) {
                                     User currentUser = value.toObject(User.class);
                                     // determine if user is admin
-                                    if(currentUser != null){
+                                    if (currentUser != null) {
                                         Log.d(TAG, "currentUSer: " + currentUser.toString());
                                         boolean isAdmin = currentUser.isAdminUser();
                                         errorText2.setVisibility(View.VISIBLE);
                                         Intent intent;
-                                        if(isAdmin){
+                                        if (isAdmin) {
                                             // go to admin dashboard
                                             intent = new Intent(Login.this, AdminDashboard.class);
-                                        }else {
+                                        } else {
                                             // go to camera home
                                             intent = new Intent(Login.this, CameraHome.class);
 
@@ -178,7 +171,7 @@ public class Login extends AppCompatActivity {
 
         // Lets firstly check none of the fields are empty.
         if (field1.getText().length() >= 1 && field2.getText().length() >= 1) {
-            if(!field1.getText().toString().contains("@")){
+            if (!field1.getText().toString().contains("@")) {
                 errorText3.setVisibility(View.VISIBLE);
                 return false;
             }

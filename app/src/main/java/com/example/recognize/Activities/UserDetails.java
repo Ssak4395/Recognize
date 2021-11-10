@@ -44,8 +44,6 @@ public class UserDetails extends AppCompatActivity {
     private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     private String fullName;
 
-    private User loggedInUser;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,10 +87,9 @@ public class UserDetails extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot value,
                                 @Nullable FirebaseFirestoreException error) {
                 if (value != null) {
+                    // convert user to our User model
                     User user = value.toObject(User.class);
                     if (user != null) {
-                        // assign user
-                        loggedInUser = user;
 
                         // set name
                         fullName = user.getFirstName() + " " + user.getLastName();
