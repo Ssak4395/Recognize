@@ -26,6 +26,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recognize.R;
+import com.example.recognize.utils.Constants;
 import com.example.recognize.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -116,7 +117,7 @@ public class UserDetails extends AppCompatActivity {
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         int amStreamMusicMaxVol = am.getStreamMaxVolume(am.STREAM_MUSIC);
         am.setStreamVolume(am.STREAM_MUSIC, amStreamMusicMaxVol, 0);
-        mTTS.setPitch(Utils.pitch);
+        mTTS.setPitch(Constants.PITCH);
         mTTS.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null);
     }
 
