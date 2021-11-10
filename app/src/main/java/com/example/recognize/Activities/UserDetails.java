@@ -5,43 +5,37 @@ import android.content.Context;
 import android.content.DialogInterface;
 
 import android.content.Intent;
-import android.location.Location;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
+
 import android.widget.ImageView;
 
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recognize.R;
 import com.example.recognize.utils.Constants;
-import com.example.recognize.utils.Utils;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import Models.User;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import java.util.Locale;
 
 
 public class UserDetails extends AppCompatActivity {
@@ -51,7 +45,12 @@ public class UserDetails extends AppCompatActivity {
     private ImageView logout;
     private ImageView speaker;
     private TextToSpeech mTTS;
+    private CollectionReference userCollectionRef;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    private String fullName;
+
+    FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +64,44 @@ public class UserDetails extends AppCompatActivity {
         speaker = findViewById(R.id.user_details_speaker);
         logout = findViewById(R.id.logout_button);
         logout.setOnClickListener(v -> logoutDialog());
-        initTTS();
+        firebaseDatabase = FirebaseDatabase.getInstance();
 
         speaker.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
-               speak("Your email address is "+ currentUser.getEmail()+" Your name is John Doe");
+               speak("Your email address is "+ currentUser.getEmail()+" Your name is "+fullName);
+            }
+        });
+
+        initTTS();
+        getUserData();
+    }
+
+    /**
+     * Get user name from firestore and set it to the Text Object
+     */
+    private void getUserData(){
+        userCollectionRef = db.collection("users");
+        DocumentReference userDoc = userCollectionRef.document(currentUser.getUid());
+        userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d("PLEASE","Listen failed: " + error);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    fullName = (String)snapshot.getData().get("firstName")+" "+(String)snapshot.getData().get("lastName");
+                    userFullName.setText(fullName);
+                } else {
+                    Log.d("PLEASE","Current data: null");
+                }
             }
         });
     }
 
-    private void sayHi(){
-        Log.d("CREATION", "hi ");
-    }
     /**
      * Increases the volume of the device and calls the text to speech engine to speak text
      *

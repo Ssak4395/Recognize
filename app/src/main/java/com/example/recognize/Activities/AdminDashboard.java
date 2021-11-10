@@ -29,25 +29,14 @@ public class AdminDashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAdminBinding.inflate(this.getLayoutInflater());
         setContentView(binding.getRoot());
-
-
         NavHostFragment navHostFragment =
                 (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_admin);
         if (navHostFragment != null) {
-
             NavController navController = navHostFragment.getNavController();
             appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-
-
         }
-
-
-
-
     }
-
 
     /**
      * {@inheritDoc}
