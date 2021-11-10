@@ -10,18 +10,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recognize.R;
+import com.example.recognize.utils.Constants;
 import com.example.recognize.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import Models.User;
 
 
 /**
@@ -29,8 +41,10 @@ import java.util.regex.Pattern;
  * if currently not a member.
  */
 public class Login extends AppCompatActivity {
+    private static final String TAG = "LoginActivity";
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     TextView register;
     Button login;
     EditText email;
@@ -104,13 +118,38 @@ public class Login extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("Successful!", "signInWithEmail:success");
                             Toast.makeText(Login.this, "Successful login!", Toast.LENGTH_LONG).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
 
-                            if (user != null) {
-                                errorText2.setVisibility(View.VISIBLE);
-                                Intent intent = new Intent(Login.this, CameraHome.class);
-                                startActivity(intent);
-                            }
+                            String userId = mAuth.getCurrentUser().getUid();
+                            DocumentReference userRef = db.collection(Constants.USERS_COLLECTION).document(userId);
+                            userRef.addSnapshotListener((value, error) -> {
+                                if(value != null){
+                                    User currentUser = value.toObject(User.class);
+                                    // determine if user is admin
+                                    if(currentUser != null){
+                                        Log.d(TAG, "currentUSer: " + currentUser.toString());
+                                        boolean isAdmin = currentUser.isAdminUser();
+                                        errorText2.setVisibility(View.VISIBLE);
+                                        Intent intent;
+                                        if(isAdmin){
+                                            // go to admin dashboard
+                                            intent = new Intent(Login.this, AdminDashboard.class);
+                                        }else {
+                                            // go to camera home
+                                            intent = new Intent(Login.this, CameraHome.class);
+
+                                        }
+                                        startActivity(intent);
+                                    }
+                                } else {
+                                    Log.d(TAG, error.toString());
+                                }
+                            });
+
+//                            if (user != null) {
+//                                errorText2.setVisibility(View.VISIBLE);
+//                                Intent intent = new Intent(Login.this, CameraHome.class);
+//                                startActivity(intent);
+//                            }
 
                         } else {
                             errorText1.setVisibility(View.INVISIBLE);

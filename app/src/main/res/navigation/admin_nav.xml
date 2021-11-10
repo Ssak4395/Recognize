@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_nav"
+    app:startDestination="@id/adminHome">
+
+    <fragment
+        android:id="@+id/adminHome"
+        android:name="com.example.recognize.fragments.AdminHome"
+        android:label="Admin"
+        tools:layout="@layout/fragment_admin_home">
+        <action
+            android:id="@+id/action_adminHome_to_adminEditUser"
+            app:destination="@id/adminEditUser" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminEditUser"
+        android:name="com.example.recognize.fragments.AdminEditUser"
+        android:label="Edit User"
+        tools:layout="@layout/fragment_admin_edit_user">
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_adminEditUser_to_adminHome"
+            app:popUpTo="@id/adminHome" />
+    </fragment>
+</navigation>

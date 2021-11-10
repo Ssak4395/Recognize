@@ -47,6 +47,7 @@ import com.example.recognize.network.AzureCaption;
 import com.example.recognize.network.AzureDescription;
 import com.example.recognize.network.AzureManagerService;
 import com.example.recognize.network.RetrofitInstance;
+import com.example.recognize.utils.Constants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -55,6 +56,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,6 +72,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import Models.User;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -110,6 +114,7 @@ public class CameraHome extends AppCompatActivity {
     private boolean isNetworkConnected;
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
     @Override
@@ -185,6 +190,7 @@ public class CameraHome extends AppCompatActivity {
         });
 
     }
+
 
 
     /**
@@ -551,8 +557,34 @@ public class CameraHome extends AppCompatActivity {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
+
             Intent intent = new Intent(CameraHome.this, Login.class);
             startActivity(intent);
+        } else {
+            DocumentReference userRef = db.collection(Constants.USERS_COLLECTION).document(currentUser.getUid());
+            userRef.addSnapshotListener((value, error) -> {
+                if(value != null){
+                    User user = value.toObject(User.class);
+                    // determine if user is admin
+                    if(user != null){
+                        Log.d(TAG, "currentUSer: " + currentUser.toString());
+                        boolean isAdmin = user.isAdminUser();
+                        Intent intent;
+                        if(isAdmin){
+                            // go to admin dashboard
+                            intent = new Intent(CameraHome.this, AdminDashboard.class);
+                            startActivity(intent);
+                        }
+
+                    }
+                } else {
+                    Log.d(TAG, error.toString());
+                }
+            });
+
+
+
+
         }
 
 

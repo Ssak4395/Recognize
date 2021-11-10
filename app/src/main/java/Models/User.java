@@ -1,36 +1,44 @@
 package Models;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 public class User {
 
-    private String id;
+    private String uid;
     private String email;
     private String firstName;
     private String lastName;
+    private boolean isAdminUser;
 //    private List<Object> listOfCapturedImages;
+
 
     // empty constructor for serialization
     public User(){}
-    public User(String email, String firstName, String lastName) {
+
+    public User(String uid, String email, String firstName, String lastName, boolean isAdminUser) {
+        this.uid = uid;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.isAdminUser = isAdminUser;
     }
 
-    public User(String id, String email, String firstName, String lastName) {
-        this.id = id;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public boolean isAdminUser() {
+        return isAdminUser;
     }
 
-    public String getId() {
-        return id;
+    public void setAdminUser(boolean adminUser) {
+        isAdminUser = adminUser;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getEmail() {
@@ -55,5 +63,16 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid='" + uid + '\'' +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", isAdminUser=" + isAdminUser +
+                '}';
     }
 }
