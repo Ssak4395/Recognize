@@ -1,6 +1,10 @@
 package com.example.recognize.utils;
 
+
 import android.app.Activity;
+import android.content.Context;
+import android.media.AudioManager;
+import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -10,6 +14,15 @@ import android.widget.EditText;
  * Util class contain reusable helper functions
  */
 public class Utils {
+
+
+    public static void changePitch(){
+        if(Constants.PITCH==.5f){
+            Constants.PITCH = 1f;
+        }else{
+            Constants.PITCH =.5f;
+        }
+    }
 
     /**
      * Helper function to hide the virtual onscreen keyboard.

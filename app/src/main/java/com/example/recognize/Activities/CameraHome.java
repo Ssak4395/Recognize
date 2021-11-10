@@ -47,6 +47,7 @@ import com.example.recognize.network.AzureCaption;
 import com.example.recognize.network.AzureDescription;
 import com.example.recognize.network.AzureManagerService;
 import com.example.recognize.network.RetrofitInstance;
+import com.example.recognize.utils.Utils;
 import com.example.recognize.utils.Constants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -152,7 +153,6 @@ public class CameraHome extends AppCompatActivity {
 
         // setup logout button
         locationButton = binding.getLocation;
-        locationButton.setOnClickListener(v -> getLocation());
 
         // camera view
         viewFinder = binding.cameraViewFinder;
@@ -168,39 +168,26 @@ public class CameraHome extends AppCompatActivity {
         registerNetworkCallback();
 
         button.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onClick(View v) {
-
-                Task<Location> lastLoc = fusedLocationClient.getLastLocation();
-                lastLoc.addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        speak(getReadableAddress(location));
-                    }
-                });
-                lastLoc.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        speak("Location retrieval has failed, please try again later or check location permissions.");
-                    }
-                });
-
-            }
-        });
+          @SuppressLint("MissingPermission")
+          @Override
+          public void onClick(View v) {
+              Task<Location> lastLoc = fusedLocationClient.getLastLocation();
+              lastLoc.addOnSuccessListener(new OnSuccessListener<Location>() {
+                  @Override
+                  public void onSuccess(Location location) {
+                      speak(getReadableAddress(location));
+                  }
+              });
+              lastLoc.addOnFailureListener(new OnFailureListener() {
+                  @Override
+                  public void onFailure(@NonNull Exception e) {
+                      speak("Location retrieval has failed, please try again later or check location permissions.");
+                  }
+              });
+          }
+      });
 
     }
-
-
-
-    /**
-     * Dummy place holder for get location
-     */
-    private void getLocation(){
-
-    }
-
-
     /**
      * takePhoto is responsible for capturing the image currently displayed in the camera view,
      * saving
@@ -449,10 +436,11 @@ public class CameraHome extends AppCompatActivity {
      *
      * @param textToSpeech
      */
-    private void speak(String textToSpeech) {
+    public void speak(String textToSpeech) {
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         int amStreamMusicMaxVol = am.getStreamMaxVolume(am.STREAM_MUSIC);
         am.setStreamVolume(am.STREAM_MUSIC, amStreamMusicMaxVol, 0);
+        mTTS.setPitch(Constants.PITCH);
         mTTS.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null);
     }
 
@@ -464,8 +452,6 @@ public class CameraHome extends AppCompatActivity {
             if (status == TextToSpeech.SUCCESS) {
                 int result = mTTS.setLanguage(Locale.ENGLISH);
                 Log.d("TTS:", "the result was" + result);
-
-
                 if (result == TextToSpeech.LANG_MISSING_DATA
                         || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Log.e("TTS", "Language not supported");
@@ -475,7 +461,7 @@ public class CameraHome extends AppCompatActivity {
             } else {
                 Log.e("TTS", "Initialization failed");
             }
-        });
+        },"com.google.android.tts");
 
     }
 
@@ -518,8 +504,6 @@ public class CameraHome extends AppCompatActivity {
         mAuth.signOut();
         Intent intent = new Intent(CameraHome.this, Login.class);
         startActivity(intent);
-
-
     }
 
     /**
@@ -543,8 +527,6 @@ public class CameraHome extends AppCompatActivity {
                     }
                 });
         alertBuilder.create().show();
-
-
     }
 
 
@@ -624,11 +606,5 @@ public class CameraHome extends AppCompatActivity {
 
       return "You are currently located in " + streetNumber+ " " + address + " in the city of " + city + " located in the state of " + state + " The post code is " + postalCode;
     }
-
-
-
-
-
-
 
 }

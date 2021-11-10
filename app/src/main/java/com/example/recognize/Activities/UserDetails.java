@@ -1,12 +1,15 @@
 package com.example.recognize.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 
 import android.content.Intent;
+import android.location.Location;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,38 +29,67 @@ import com.example.recognize.R;
 import com.example.recognize.utils.Constants;
 import com.example.recognize.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import Models.User;
 
-public class DashBoard extends AppCompatActivity {
+
+public class UserDetails extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private ImageView userDetailsBtn;
-    private ImageView changeVoiceBtn;
+    private TextView userEmail;
+    private TextView userFullName;
     private ImageView logout;
+    private ImageView speaker;
     private TextToSpeech mTTS;
+    private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dash);
+        setContentView(R.layout.activity_user_details);
         mAuth = FirebaseAuth.getInstance();
+        userFullName = findViewById(R.id.user_name_text);
+        userEmail = findViewById(R.id.user_email_text);
+        userEmail.setText(currentUser.getEmail());
 
-        userDetailsBtn = findViewById(R.id.user_details_btn);
-        userDetailsBtn.setOnClickListener(v -> goToDetails());
-
-        changeVoiceBtn = findViewById(R.id.voice_change_btn);
-        changeVoiceBtn.setOnClickListener(v -> changeVoice());
-
+        speaker = findViewById(R.id.user_details_speaker);
         logout = findViewById(R.id.logout_button);
         logout.setOnClickListener(v -> logoutDialog());
         initTTS();
+
+        speaker.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onClick(View v) {
+               speak("Your email address is "+ currentUser.getEmail()+" Your name is John Doe");
+            }
+        });
+    }
+
+    private void sayHi(){
+        Log.d("CREATION", "hi ");
+    }
+    /**
+     * Increases the volume of the device and calls the text to speech engine to speak text
+     *
+     * @param textToSpeech
+     */
+    private void speak(String textToSpeech) {
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int amStreamMusicMaxVol = am.getStreamMaxVolume(am.STREAM_MUSIC);
+        am.setStreamVolume(am.STREAM_MUSIC, amStreamMusicMaxVol, 0);
+        mTTS.setPitch(Constants.PITCH);
+        mTTS.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     /**
@@ -82,12 +114,15 @@ public class DashBoard extends AppCompatActivity {
             }
         },"com.google.android.tts");
     }
+
+
+
     /**
      * Logs the current user out
      */
     public void logout(){
         mAuth.signOut();
-        Intent intent = new Intent(DashBoard.this, Login.class);
+        Intent intent = new Intent(UserDetails.this, Login.class);
         startActivity(intent);
     }
 
@@ -115,28 +150,5 @@ public class DashBoard extends AppCompatActivity {
     }
 
 
-    public void goToDetails(){
-        Intent intent = new Intent(DashBoard.this, UserDetails.class);
-        startActivity(intent);
-    }
 
-
-    public void changeVoice(){
-
-        Utils.changePitch();
-        speak("The speaker's voice has been changed.");
-    }
-
-    /**
-     * Increases the volume of the device and calls the text to speech engine to speak text
-     *
-     * @param textToSpeech
-     */
-    private void speak(String textToSpeech) {
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        int amStreamMusicMaxVol = am.getStreamMaxVolume(am.STREAM_MUSIC);
-        am.setStreamVolume(am.STREAM_MUSIC, amStreamMusicMaxVol, 0);
-        mTTS.setPitch(Constants.PITCH);
-        mTTS.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null);
-    }
 }
