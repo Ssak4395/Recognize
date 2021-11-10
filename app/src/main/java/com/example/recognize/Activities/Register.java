@@ -146,10 +146,15 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            String uid = mAuth.getCurrentUser().getUid();
+
+
                             User userToAdd = new User();
                             userToAdd.setEmail(email);
                             userToAdd.setFirstName(firstName);
                             userToAdd.setLastName(lastName);
+                            userToAdd.setAdminUser(false);
+                            userToAdd.setUid(uid);
                             addUserToFirestore(userToAdd);
 
                             FirebaseUser user = mAuth.getCurrentUser();
@@ -175,23 +180,12 @@ public class Register extends AppCompatActivity {
      * @param user the new User {@link User} to add
      */
     private void addUserToFirestore(User user) {
-        db.collection(Constants.USERS_COLLECTION)
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG,
-                                "successfully added user to Firestore with id: " + documentReference.getId());
-                        // set id of user within model for complex queries
-                        user.setId(documentReference.getId());
-                        db.collection(Constants.USERS_COLLECTION).document(documentReference.getId()).set(user);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "unable to add user to Firestore");
-            }
-        });
+        DocumentReference documentReference =
+                db.collection(Constants.USERS_COLLECTION).document(user.getUid());
+
+        documentReference.set(user).addOnSuccessListener(unused -> Log.d(TAG, "onSuccess: user success")).addOnFailureListener(e -> Log.d(TAG, "onFailure: user not created in firestore"));
+
+
     }
 
 

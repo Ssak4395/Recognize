@@ -29,7 +29,12 @@
             android:name=".Activities.CameraHome"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_camera_home"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="true"/>
+        <activity android:name=".Activities.AdminDashboard"
+            android:label="Admin Dashboard"
+            android:exported="true"
+        />
 <!--        <activity-->
 <!--            android:name=".Activities.CameraHome"-->
 <!--            android:configChanges="orientation|keyboardHidden|screenSize"-->
@@ -39,17 +44,20 @@
             android:name=".Activities.Register"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_regsiter"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="true"/>
         <activity
             android:name=".Activities.Login"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_login"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="true"/>
         <activity
             android:name=".Activities.Splash"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="true">
 
 
             <intent-filter>
