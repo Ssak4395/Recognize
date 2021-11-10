@@ -180,7 +180,9 @@ public class Register extends AppCompatActivity {
         DocumentReference documentReference =
                 db.collection(Constants.USERS_COLLECTION).document(user.getUid());
 
-        documentReference.set(user).addOnSuccessListener(unused -> Log.d(TAG, "onSuccess: user success")).addOnFailureListener(e -> Log.d(TAG, "onFailure: user not created in firestore"));
+        documentReference.set(user).addOnSuccessListener(unused -> Log.d(TAG, "onSuccess: user " +
+                "success")).addOnFailureListener(e -> Log.d(TAG, "onFailure: user not created in " +
+                "firestore"));
 
 
     }

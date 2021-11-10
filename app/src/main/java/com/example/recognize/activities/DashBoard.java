@@ -2,7 +2,6 @@ package com.example.recognize.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
-
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AlertDialog;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recognize.R;
@@ -66,12 +64,13 @@ public class DashBoard extends AppCompatActivity {
             } else {
                 Log.e("TTS", "Initialization failed");
             }
-        },"com.google.android.tts");
+        }, "com.google.android.tts");
     }
+
     /**
      * Logs the current user out
      */
-    public void logout(){
+    public void logout() {
         mAuth.signOut();
         Intent intent = new Intent(DashBoard.this, Login.class);
         startActivity(intent);
@@ -101,13 +100,13 @@ public class DashBoard extends AppCompatActivity {
     }
 
 
-    public void goToDetails(){
+    public void goToDetails() {
         Intent intent = new Intent(DashBoard.this, UserDetails.class);
         startActivity(intent);
     }
 
 
-    public void changeVoice(){
+    public void changeVoice() {
 
         Utils.changePitch();
         speak("The speaker's voice has been changed.");

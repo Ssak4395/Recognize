@@ -1,6 +1,10 @@
 package com.example.recognize.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,11 +14,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.recognize.R;
 import com.example.recognize.adapters.UsersListAdapter;
@@ -45,10 +44,6 @@ public class AdminHome extends Fragment {
     private ArrayList<User> userList;
     private UsersListAdapter usersListAdapter;
     private AdminViewModel model;
-
-
-
-
 
 
     public AdminHome() {
@@ -86,7 +81,7 @@ public class AdminHome extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        if(getActivity() != null){
+        if (getActivity() != null) {
             model = new ViewModelProvider(getActivity()).get(AdminViewModel.class);
         }
         return inflater.inflate(R.layout.fragment_admin_home, container, false);
@@ -109,7 +104,8 @@ public class AdminHome extends Fragment {
      */
     UsersListAdapter.OnUserClick onUserClickListener = userId -> {
         if (getActivity() != null) {
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_admin);
+            NavController navController = Navigation.findNavController(getActivity(),
+                    R.id.nav_host_fragment_admin);
             Bundle bundle = new Bundle();
             bundle.putString("userId", userId);
             navController.navigate(R.id.action_adminHome_to_adminEditUser, bundle);
@@ -117,11 +113,9 @@ public class AdminHome extends Fragment {
     };
 
     public void setupRecyclerView() {
-        if(userList == null){
+        if (userList == null) {
             userList = new ArrayList<>();
         }
-//        User testUser = new User("dfogindfoigndfgio", "test@testemail.com", "Jim", "Henry", false);
-//        userList.add(testUser);
 
         usersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         usersListAdapter = new UsersListAdapter(userList, onUserClickListener);
@@ -131,24 +125,16 @@ public class AdminHome extends Fragment {
     }
 
 
-    private void setupUsersObserver(){
+    private void setupUsersObserver() {
 
-            model.getUsersList().observe(getActivity(), users -> {
-                Log.d(TAG, "setupUsersObserver: ");
-                userList.clear();
-                userList.addAll(users);
-
-//                users.forEach(u -> {
-//                    Log.d(TAG, "setupUsersObserver: " + u.toString());
-//                    boolean inList = userList.stream().anyMatch(li-> li.getUid().equals(u.getUid()));
-//                    if(!inList){userList.add(u);}
-//
-//                });
-                usersListAdapter.notifyDataSetChanged();
-            });
+        model.getUsersList().observe(getActivity(), users -> {
+            Log.d(TAG, "setupUsersObserver: ");
+            userList.clear();
+            userList.addAll(users);
+            usersListAdapter.notifyDataSetChanged();
+        });
 
     }
-
 
 
 }
