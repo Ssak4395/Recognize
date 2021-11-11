@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:andorid="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/gradient_background"
+    android:background="@drawable/gradient_background_dash"
     android:theme="@style/ThemeOverlay.Recognize.FullscreenContainer"
     tools:context=".activities.Login">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="273dp">
 
         <TextView
+            android:textColor="#009688"
+            android:contentDescription="@string/user_full_name_title"
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,9 +28,45 @@
             andorid:layout_constraintEnd_toEndOf="parent"
             andorid:layout_constraintStart_toStartOf="parent"
             andorid:layout_constraintTop_toBottomOf="@+id/user_email_text"
-            andorid:layout_constraintVertical_bias="0.082" />
+            andorid:layout_constraintVertical_bias="0.154" />
 
         <TextView
+            android:textColor="#009688"
+            android:contentDescription="@string/user_email_title"
+
+            android:id="@+id/user_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:text="Email address:"
+            android:textSize="34sp"
+            andorid:layout_constraintBottom_toBottomOf="parent"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintHorizontal_bias="0.497"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toBottomOf="@+id/user_details"
+            andorid:layout_constraintVertical_bias="0.401" />
+
+        <TextView
+            android:contentDescription="@string/user_full_name_content"
+
+            android:textColor="#009688"
+
+            android:id="@+id/user_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="John Doe"
+            android:textSize="34sp"
+            andorid:layout_constraintBottom_toBottomOf="parent"
+            andorid:layout_constraintEnd_toEndOf="parent"
+            andorid:layout_constraintStart_toStartOf="parent"
+            andorid:layout_constraintTop_toBottomOf="@+id/user_name"
+            andorid:layout_constraintVertical_bias="0.108" />
+
+        <TextView
+            android:contentDescription="@string/user_email_content"
+
+            android:textColor="#009688"
             android:id="@+id/user_email_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,40 +77,14 @@
             andorid:layout_constraintEnd_toEndOf="parent"
             andorid:layout_constraintStart_toStartOf="parent"
             andorid:layout_constraintTop_toBottomOf="@+id/user_email"
-            andorid:layout_constraintVertical_bias="0.002" />
-
-        <TextView
-            android:id="@+id/user_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
-            android:text="Email address:"
-            android:textSize="34sp"
-            andorid:layout_constraintBottom_toBottomOf="parent"
-            andorid:layout_constraintEnd_toEndOf="parent"
-            andorid:layout_constraintHorizontal_bias="0.566"
-            andorid:layout_constraintStart_toStartOf="parent"
-            andorid:layout_constraintTop_toBottomOf="@+id/user_details"
-            andorid:layout_constraintVertical_bias="0.06" />
-
-        <TextView
-            android:id="@+id/user_name_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="John Doe"
-            android:textSize="34sp"
-            andorid:layout_constraintBottom_toBottomOf="parent"
-            andorid:layout_constraintEnd_toEndOf="parent"
-            andorid:layout_constraintStart_toStartOf="parent"
-            andorid:layout_constraintTop_toBottomOf="@+id/user_name"
-            andorid:layout_constraintVertical_bias="0.046" />
+            andorid:layout_constraintVertical_bias="0.003" />
 
         <ImageView
+
             android:id="@+id/logout_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="12dp"
-
             android:contentDescription="@string/log_out_button"
             android:elevation="2dp"
             android:src="@drawable/ic_baseline_logout_24"
@@ -77,16 +93,18 @@
             andorid:layout_constraintHorizontal_bias="0.955"
             andorid:layout_constraintStart_toStartOf="parent"
             andorid:layout_constraintTop_toTopOf="parent"
-            andorid:layout_constraintVertical_bias="0.023" />
+            andorid:layout_constraintVertical_bias="0.023"
+    />
 
         <TextView
+            android:contentDescription="@string/user_details_page_title"
             android:id="@+id/user_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Your details"
-            android:textStyle="bold"
             android:textColor="#009688"
             android:textSize="34sp"
+            android:textStyle="bold"
             andorid:layout_constraintBottom_toBottomOf="parent"
             andorid:layout_constraintEnd_toEndOf="parent"
             andorid:layout_constraintHorizontal_bias="0.497"
@@ -95,17 +113,21 @@
             andorid:layout_constraintVertical_bias="0.046" />
 
         <ImageView
+            android:contentDescription="@string/announce_user_details_button"
             android:id="@+id/user_details_speaker"
-            android:layout_width="414dp"
-            android:layout_height="204dp"
+            android:layout_width="205dp"
+            android:layout_height="191dp"
             android:background="@drawable/rounded_corners_button"
+            android:backgroundTint="#40E305"
             andorid:layout_constraintBottom_toBottomOf="parent"
             andorid:layout_constraintEnd_toEndOf="parent"
             andorid:layout_constraintHorizontal_bias="0.666"
             andorid:layout_constraintStart_toStartOf="parent"
-            andorid:layout_constraintTop_toBottomOf="@+id/user_name_text"
-            andorid:layout_constraintVertical_bias="0.275"
-            andorid:srcCompat="@drawable/ic_user_details_speak_btn" />
+            andorid:layout_constraintTop_toBottomOf="@+id/user_details"
+            andorid:layout_constraintVertical_bias="0.071"
+            andorid:srcCompat="@drawable/ic_user_details_speak_btn"
+            app:layout_constraintHorizontal_bias="0.515"
+            app:layout_constraintVertical_bias="0.092" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

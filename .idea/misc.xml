@@ -5,25 +5,27 @@
       <map>
         <entry key="app/src/main/res/drawable-anydpi/ic_Gallery.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/drawable-anydpi/ic_Location.xml" value="0.440625" />
+        <entry key="app/src/main/res/drawable-anydpi/ic_location_btn.xml" value="0.25729166666666664" />
         <entry key="app/src/main/res/drawable/circular_button.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/drawable/gradient_background.xml" value="0.2604166666666667" />
+        <entry key="app/src/main/res/drawable/gradient_background_dash.xml" value="0.25729166666666664" />
         <entry key="app/src/main/res/drawable/gradient_background_register.xml" value="0.2604166666666667" />
+        <entry key="app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_logout_24.xml" value="0.25729166666666664" />
         <entry key="app/src/main/res/drawable/rounded_corners_button.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/drawable/rounded_rectangle.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/layout/activity_admin.xml" value="0.2234375" />
-        <entry key="app/src/main/res/layout/activity_camera_home.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/activity_camera_home.xml" value="0.2464491027485583" />
         <entry key="app/src/main/res/layout/activity_dash.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.24427083333333333" />
-        <entry key="app/src/main/res/layout/activity_fullscreen.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_fullscreen.xml" value="0.2716866987863674" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.36957808780214946" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.18229166666666666" />
         <entry key="app/src/main/res/layout/activity_preview.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.30388219182700393" />
-        <entry key="app/src/main/res/layout/activity_result.xml" value="0.18229166666666666" />
         <entry key="app/src/main/res/layout/activity_user_details.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/layout/fragment_admin_edit_user.xml" value="0.2234375" />
         <entry key="app/src/main/res/layout/fragment_admin_home.xml" value="0.2234375" />
-        <entry key="app/src/main/res/layout/pw.xml" value="0.18229166666666666" />
+        <entry key="app/src/main/res/layout/pw.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/users_list.xml" value="0.4707313241877534" />
         <entry key="app/src/main/res/menu/admin_menu.xml" value="0.2234375" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.440625" />
