@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:andorid="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/gradient_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gradient_background_dash"
     android:theme="@style/ThemeOverlay.Recognize.FullscreenContainer"
     tools:context=".activities.Login">
 
@@ -17,7 +18,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="12dp"
-
+            app:tint="#FF0000"
             android:contentDescription="@string/log_out_button"
             android:elevation="2dp"
             android:src="@drawable/ic_baseline_logout_24"
@@ -32,7 +33,8 @@
             android:id="@+id/user_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dash Board"
+            android:contentDescription="@string/dash_board_page_title"
+            android:text="Dashboard"
             android:textColor="#009688"
             android:textSize="34sp"
             andorid:layout_constraintBottom_toBottomOf="parent"
@@ -43,23 +45,28 @@
             andorid:layout_constraintVertical_bias="0.046" />
 
         <ImageView
+
             android:id="@+id/user_details_btn"
-            android:layout_width="145dp"
-            android:layout_height="149dp"
+            android:contentDescription="@string/go_to_user_details_button"
+            android:layout_width="205dp"
+            android:layout_height="191dp"
             android:background="@drawable/rounded_corners_button"
+            android:backgroundTint="#FF9800"
             android:padding="20dp"
             andorid:layout_constraintBottom_toBottomOf="parent"
             andorid:layout_constraintEnd_toEndOf="parent"
             andorid:layout_constraintStart_toStartOf="parent"
             andorid:layout_constraintTop_toTopOf="parent"
-            andorid:layout_constraintVertical_bias="0.331"
+            andorid:layout_constraintVertical_bias="0.309"
             andorid:srcCompat="@drawable/ic_user_details_btn" />
 
         <ImageView
             android:id="@+id/voice_change_btn"
-            android:layout_width="145dp"
-            android:layout_height="149dp"
+            android:contentDescription="@string/change_announcer_voice_button"
+            android:layout_width="205dp"
+            android:layout_height="191dp"
             android:background="@drawable/rounded_corners_button"
+            android:backgroundTint="#30FF02"
             android:padding="20dp"
             andorid:layout_constraintBottom_toBottomOf="parent"
             andorid:layout_constraintEnd_toEndOf="parent"

@@ -20,22 +20,25 @@
         android:src="@drawable/capture"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/capture_image_text_button"
         android:layout_width="85dp"
         android:layout_height="85dp"
         android:layout_margin="30dp"
-        android:layout_marginBottom="28dp"
         android:contentDescription="@string/capture_image_for_text"
         android:elevation="2dp"
         android:importantForAccessibility="yes"
         android:src="@drawable/ic_baseline_text_snippet_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.794"
         app:layout_constraintStart_toEndOf="@+id/camera_capture_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.996"
         app:tint="#3E50B4" />
 
     <ImageView
@@ -43,7 +46,6 @@
         android:layout_width="85dp"
         android:layout_height="85dp"
         android:layout_margin="30dp"
-        android:layout_marginBottom="28dp"
         android:contentDescription="@string/get_location"
         android:elevation="2dp"
         android:importantForAccessibility="yes"
@@ -52,8 +54,10 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/camera_capture_button"
-        app:layout_constraintHorizontal_bias="0.205"
+        app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:tint="#3E50B4" />
 
     <ImageView
@@ -64,8 +68,12 @@
         android:contentDescription="@string/log_out_button"
         android:elevation="2dp"
         android:src="@drawable/ic_baseline_logout_24"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.991"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.005"
         app:tint="@color/white" />
 
     <ImageView
@@ -73,17 +81,17 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginBottom="28dp"
         android:contentDescription="click to change voices or listen to profile details"
         android:elevation="2dp"
         android:importantForAccessibility="yes"
         android:src="@drawable/ic_user_details_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/logout_button"
+        app:layout_constraintHorizontal_bias="0.989"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/logout_button"
+        app:layout_constraintVertical_bias="0.0"
         app:tint="@color/white" />
-
-
-
 
     <androidx.camera.view.PreviewView
         android:id="@+id/camera_view_finder"
@@ -93,6 +101,5 @@
         tools:layout_editor_absoluteY="0dp">
 
     </androidx.camera.view.PreviewView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

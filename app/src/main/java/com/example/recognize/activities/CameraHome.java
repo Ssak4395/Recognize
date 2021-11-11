@@ -243,9 +243,9 @@ public class CameraHome extends AppCompatActivity {
                             new Handler().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(CameraHome.this, R.string.processing_image,
+                                    Toast.makeText(CameraHome.this, R.string.processing_image_obj,
                                             Toast.LENGTH_SHORT).show();
-                                    speak(getResources().getString(R.string.processing_image));
+                                    speak(getResources().getString(R.string.processing_image_obj));
                                 }
                             });
                         }
@@ -303,9 +303,9 @@ public class CameraHome extends AppCompatActivity {
                             new Handler().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(CameraHome.this, R.string.processing_image,
+                                    Toast.makeText(CameraHome.this, R.string.processing_image_txt,
                                             Toast.LENGTH_SHORT).show();
-                                    speak(getResources().getString(R.string.processing_image));
+                                    speak(getResources().getString(R.string.processing_image_txt));
                                 }
                             });
                         }

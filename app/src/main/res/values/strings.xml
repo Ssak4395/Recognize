@@ -12,7 +12,8 @@
     <string name="title_activity_preview">FullscreenActivity</string>
     <string name="azure_key">e49dcd7ae04a4d49b509fca64e085c84</string>
     <string name="try_again">Please try again</string>
-    <string name="processing_image">Processing image</string>
+    <string name="processing_image_obj">Your image has been taken for Object detection, Please wait for the results before clicking again</string>
+    <string name="processing_image_txt">Your image has been taken for Text detection, Please wait for the results before clicking again</string>
     <string name="check_connection">Please check your network connection and try again</string>
     <string name="log_out_button">log out button</string>
     <string name="capture_image_for_description">Capture image for description of objects</string>
@@ -29,4 +30,14 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="click_to_edit_this_user">click to edit this user</string>
     <string name="click_to_save_any_edits">click to save any edits</string>
+    <string name="announce_user_detials_button">announce_user_details_button</string>
+    <string name="announce_user_details_button">announce_user_details_button</string>
+    <string name="user_details_page_title">user_details_page_title</string>
+    <string name="user_email_content">user_email_content</string>
+    <string name="user_full_name_content">user_full_name_content</string>
+    <string name="user_email_title">user_email_title</string>
+    <string name="user_full_name_title">user_full_name_title</string>
+    <string name="change_announcer_voice_button">change_announcer_voice_button</string>
+    <string name="go_to_user_details_button">go_to_user_details_button</string>
+    <string name="dash_board_page_title">dash_board_page_title</string>
 </resources>
