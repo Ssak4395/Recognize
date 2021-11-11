@@ -12,7 +12,8 @@
     <string name="title_activity_preview">FullscreenActivity</string>
     <string name="azure_key">e49dcd7ae04a4d49b509fca64e085c84</string>
     <string name="try_again">Please try again</string>
-    <string name="processing_image">Processing image</string>
+    <string name="processing_image_obj">Your image has been taken for Object detection, Please wait for the results before clicking again</string>
+    <string name="processing_image_txt">Your image has been taken for Text detection, Please wait for the results before clicking again</string>
     <string name="check_connection">Please check your network connection and try again</string>
     <string name="log_out_button">log out button</string>
     <string name="capture_image_for_description">Capture image for description of objects</string>
