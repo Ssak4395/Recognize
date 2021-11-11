@@ -56,6 +56,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
         private MaterialButton editBtn;
         private TextView firstName;
         private TextView lastName;
+        private TextView email;
 
 
         public UsersListViewHolder(@NonNull View itemView) {
@@ -63,6 +64,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
             editBtn = itemView.findViewById(R.id.edit_button);
             firstName = itemView.findViewById(R.id.user_first_name);
             lastName = itemView.findViewById(R.id.user_last_name);
+            email = itemView.findViewById(R.id.user_email);
 
         }
 
@@ -71,6 +73,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
             Log.d(TAG, "bindItem: user" + user.getFirstName());
             firstName.setText(user.getFirstName());
             lastName.setText(user.getLastName());
+            email.setText(user.getEmail());
             editBtn.setOnClickListener(v -> {
                onUserClick.onUserClick(user.getUid());
             });
