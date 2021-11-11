@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:andorid="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/gradient_background_dash"
     android:theme="@style/ThemeOverlay.Recognize.FullscreenContainer"
     tools:context=".activities.Login">
@@ -17,7 +18,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="12dp"
-
+            app:tint="#FF0000"
             android:contentDescription="@string/log_out_button"
             android:elevation="2dp"
             android:src="@drawable/ic_baseline_logout_24"
@@ -29,11 +30,11 @@
             andorid:layout_constraintVertical_bias="0.023" />
 
         <TextView
-            android:contentDescription="@string/dash_board_page_title"
             android:id="@+id/user_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dash Board"
+            android:contentDescription="@string/dash_board_page_title"
+            android:text="Dashboard"
             android:textColor="#009688"
             android:textSize="34sp"
             andorid:layout_constraintBottom_toBottomOf="parent"

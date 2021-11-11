@@ -71,7 +71,7 @@ public class UserDetails extends AppCompatActivity {
             @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
-                speak("Your email address is " + currentUser.getEmail() + " Your name is " + fullName);
+                speak("Your email address is " + currentUser.getEmail() + " Your name is " + fullName +". If you would like to change your user details, please call +61405123123");
             }
         });
     }

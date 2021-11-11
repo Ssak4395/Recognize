@@ -121,7 +121,6 @@ public class Login extends AppCompatActivity {
                                     if (currentUser != null) {
                                         Log.d(TAG, "currentUSer: " + currentUser.toString());
                                         boolean isAdmin = currentUser.isAdminUser();
-                                        errorText2.setVisibility(View.VISIBLE);
                                         Intent intent;
                                         if (isAdmin) {
                                             // go to admin dashboard

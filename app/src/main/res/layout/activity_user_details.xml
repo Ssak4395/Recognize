@@ -80,7 +80,7 @@
             andorid:layout_constraintVertical_bias="0.003" />
 
         <ImageView
-
+            app:tint="#FF0000"
             android:id="@+id/logout_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -113,21 +113,19 @@
             andorid:layout_constraintVertical_bias="0.046" />
 
         <ImageView
-            android:contentDescription="@string/announce_user_details_button"
             android:id="@+id/user_details_speaker"
             android:layout_width="205dp"
             android:layout_height="191dp"
             android:background="@drawable/rounded_corners_button"
             android:backgroundTint="#40E305"
+            android:contentDescription="@string/announce_user_details_button"
             andorid:layout_constraintBottom_toBottomOf="parent"
             andorid:layout_constraintEnd_toEndOf="parent"
-            andorid:layout_constraintHorizontal_bias="0.666"
             andorid:layout_constraintStart_toStartOf="parent"
             andorid:layout_constraintTop_toBottomOf="@+id/user_details"
             andorid:layout_constraintVertical_bias="0.071"
             andorid:srcCompat="@drawable/ic_user_details_speak_btn"
-            app:layout_constraintHorizontal_bias="0.515"
-            app:layout_constraintVertical_bias="0.092" />
+           />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
